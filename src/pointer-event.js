@@ -11,12 +11,11 @@ import AnimEvent from 'anim-event';
 /** @type {{clientX, clientY}} */
 const lastPointerXY = {clientX: 0, clientY: 0},
   startHandlers = {},
-  curMoveHandlers = [],
   DUPLICATE_INTERVAL = 400; // For avoiding mouse event that fired by touch interface
 
 let handlerId = 0,
   lastStartTime = 0,
-  curPointerClass;
+  curPointerClass, curMoveHandler;
 
 // Support options for addEventListener
 let passiveSupported = false;
@@ -105,7 +104,7 @@ const PointerEvent = {
     });
     addEventListenerWithOptions(element, 'mousemove', pointerMove, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchmove', pointerMove, {capture: false, passive: false});
-    curMoveHandlers.push(moveHandler);
+    curMoveHandler = moveHandler;
   },
 
   /**
@@ -128,7 +127,7 @@ const PointerEvent = {
   },
 
   callMoveHandler: () => {
-    curMoveHandlers.forEach(handler => { handler(lastPointerXY); });
+    if (curMoveHandler) { curMoveHandler(lastPointerXY); }
   }
 };
 
