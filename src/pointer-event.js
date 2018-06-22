@@ -33,7 +33,7 @@ class PointerEvent {
    */
   constructor() {
     this.startHandlers = {};
-    this.handlerId = 0;
+    this.lastHandlerId = 0;
     this.curPointerClass = null;
     this.lastPointerXY = {clientX: 0, clientY: 0};
     this.lastStartTime = 0;
@@ -45,7 +45,7 @@ class PointerEvent {
    */
   regStartHandler(startHandler) {
     const that = this;
-    that.startHandlers[++that.handlerId] = event => {
+    that.startHandlers[++that.lastHandlerId] = event => {
       const pointerClass = event.type === 'mousedown' ? 'mouse' : 'touch',
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0],
         now = Date.now();
@@ -62,7 +62,7 @@ class PointerEvent {
         event.preventDefault();
       }
     };
-    return that.handlerId;
+    return that.lastHandlerId;
   }
 
   /**
