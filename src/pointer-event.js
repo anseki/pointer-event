@@ -65,6 +65,10 @@ class PointerEvent {
     return that.handlerId;
   }
 
+  /**
+   * @param {number} handlerId - An ID which was returned by regStartHandler.
+   * @returns {void}
+   */
   unregStartHandler(handlerId) { delete this.startHandlers[handlerId]; }
 
   /**
