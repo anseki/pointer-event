@@ -47,7 +47,7 @@ var PointerEvent = function () {
     _classCallCheck(this, PointerEvent);
 
     this.startHandlers = {};
-    this.handlerId = 0;
+    this.lastHandlerId = 0;
     this.curPointerClass = null;
     this.lastPointerXY = { clientX: 0, clientY: 0 };
     this.lastStartTime = 0;
@@ -63,7 +63,7 @@ var PointerEvent = function () {
     key: 'regStartHandler',
     value: function regStartHandler(startHandler) {
       var that = this;
-      that.startHandlers[++that.handlerId] = function (event) {
+      that.startHandlers[++that.lastHandlerId] = function (event) {
         var pointerClass = event.type === 'mousedown' ? 'mouse' : 'touch',
             pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0],
             now = Date.now();
@@ -79,8 +79,14 @@ var PointerEvent = function () {
           event.preventDefault();
         }
       };
-      return that.handlerId;
+      return that.lastHandlerId;
     }
+
+    /**
+     * @param {number} handlerId - An ID which was returned by regStartHandler.
+     * @returns {void}
+     */
+
   }, {
     key: 'unregStartHandler',
     value: function unregStartHandler(handlerId) {
@@ -90,29 +96,37 @@ var PointerEvent = function () {
     /**
      * @param {Element} element - A target element.
      * @param {number} handlerId - An ID which was returned by regStartHandler.
-     * @returns {void}
+     * @returns {number} handlerId which was passed.
      */
 
   }, {
     key: 'addStartHandler',
     value: function addStartHandler(element, handlerId) {
+      if (!this.startHandlers[handlerId]) {
+        throw new Error('Invalid handlerId: ' + handlerId);
+      }
       addEventListenerWithOptions(element, 'mousedown', this.startHandlers[handlerId], { capture: false, passive: false });
       addEventListenerWithOptions(element, 'touchstart', this.startHandlers[handlerId], { capture: false, passive: false });
       addEventListenerWithOptions(element, 'dragstart', dragstart, { capture: false, passive: false });
+      return handlerId;
     }
 
     /**
      * @param {Element} element - A target element.
      * @param {number} handlerId - An ID which was returned by regStartHandler.
-     * @returns {void}
+     * @returns {number} handlerId which was passed.
      */
 
   }, {
     key: 'removeStartHandler',
     value: function removeStartHandler(element, handlerId) {
+      if (!this.startHandlers[handlerId]) {
+        throw new Error('Invalid handlerId: ' + handlerId);
+      }
       element.removeEventListener('mousedown', this.startHandlers[handlerId], false);
       element.removeEventListener('touchstart', this.startHandlers[handlerId], false);
       element.removeEventListener('dragstart', dragstart, false);
+      return handlerId;
     }
 
     /**
