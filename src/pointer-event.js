@@ -77,6 +77,7 @@ class PointerEvent {
    * @returns {number} handlerId which was passed.
    */
   addStartHandler(element, handlerId) {
+    if (!this.startHandlers[handlerId]) { throw new Error(`Invalid handlerId: ${handlerId}`); }
     addEventListenerWithOptions(element, 'mousedown', this.startHandlers[handlerId],
       {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchstart', this.startHandlers[handlerId],
@@ -91,6 +92,7 @@ class PointerEvent {
    * @returns {number} handlerId which was passed.
    */
   removeStartHandler(element, handlerId) {
+    if (!this.startHandlers[handlerId]) { throw new Error(`Invalid handlerId: ${handlerId}`); }
     element.removeEventListener('mousedown', this.startHandlers[handlerId], false);
     element.removeEventListener('touchstart', this.startHandlers[handlerId], false);
     element.removeEventListener('dragstart', dragstart, false);
