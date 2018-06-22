@@ -74,7 +74,7 @@ class PointerEvent {
   /**
    * @param {Element} element - A target element.
    * @param {number} handlerId - An ID which was returned by regStartHandler.
-   * @returns {void}
+   * @returns {number} handlerId which was passed.
    */
   addStartHandler(element, handlerId) {
     addEventListenerWithOptions(element, 'mousedown', this.startHandlers[handlerId],
@@ -82,17 +82,19 @@ class PointerEvent {
     addEventListenerWithOptions(element, 'touchstart', this.startHandlers[handlerId],
       {capture: false, passive: false});
     addEventListenerWithOptions(element, 'dragstart', dragstart, {capture: false, passive: false});
+    return handlerId;
   }
 
   /**
    * @param {Element} element - A target element.
    * @param {number} handlerId - An ID which was returned by regStartHandler.
-   * @returns {void}
+   * @returns {number} handlerId which was passed.
    */
   removeStartHandler(element, handlerId) {
     element.removeEventListener('mousedown', this.startHandlers[handlerId], false);
     element.removeEventListener('touchstart', this.startHandlers[handlerId], false);
     element.removeEventListener('dragstart', dragstart, false);
+    return handlerId;
   }
 
   /**
