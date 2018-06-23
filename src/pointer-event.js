@@ -106,19 +106,30 @@ class PointerEvent {
    */
   addMoveHandler(element, moveHandler) {
     const that = this;
-    const pointerMove = AnimEvent.add(event => {
+    const wrappedHandler = AnimEvent.add(event => {
       const pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch',
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
       if (pointerClass === that.curPointerClass) {
-        moveHandler(pointerXY);
-        that.lastPointerXY.clientX = pointerXY.clientX;
-        that.lastPointerXY.clientY = pointerXY.clientY;
+        that.move(pointerXY);
         event.preventDefault();
       }
     });
-    addEventListenerWithOptions(element, 'mousemove', pointerMove, {capture: false, passive: false});
-    addEventListenerWithOptions(element, 'touchmove', pointerMove, {capture: false, passive: false});
+    addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
+    addEventListenerWithOptions(element, 'touchmove', wrappedHandler, {capture: false, passive: false});
     that.curMoveHandler = moveHandler;
+  }
+
+  /**
+   * @param {{clientX, clientY}} [pointerXY] - This might be MouseEvent, Touch of TouchEvent or Object.
+   * @returns {void}
+   */
+  move(pointerXY) {
+    if (this.curMoveHandler) {
+      if (!pointerXY) { pointerXY = this.lastPointerXY; }
+      this.curMoveHandler(pointerXY);
+      this.lastPointerXY.clientX = pointerXY.clientX;
+      this.lastPointerXY.clientY = pointerXY.clientY;
+    }
   }
 
   /**
@@ -128,7 +139,7 @@ class PointerEvent {
    */
   addEndHandler(element, endHandler) {
     const that = this;
-    function pointerEnd(event) {
+    function wrappedHandler(event) {
       const pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch';
       if (pointerClass === that.curPointerClass) {
         endHandler();
@@ -136,13 +147,9 @@ class PointerEvent {
         event.preventDefault();
       }
     }
-    addEventListenerWithOptions(element, 'mouseup', pointerEnd, {capture: false, passive: false});
-    addEventListenerWithOptions(element, 'touchend', pointerEnd, {capture: false, passive: false});
-    addEventListenerWithOptions(element, 'touchcancel', pointerEnd, {capture: false, passive: false});
-  }
-
-  callMoveHandler() {
-    if (this.curMoveHandler) { this.curMoveHandler(this.lastPointerXY); }
+    addEventListenerWithOptions(element, 'mouseup', wrappedHandler, {capture: false, passive: false});
+    addEventListenerWithOptions(element, 'touchend', wrappedHandler, {capture: false, passive: false});
+    addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, {capture: false, passive: false});
   }
 }
 
