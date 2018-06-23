@@ -142,14 +142,24 @@ class PointerEvent {
     function wrappedHandler(event) {
       const pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch';
       if (pointerClass === that.curPointerClass) {
-        endHandler();
-        that.curPointerClass = null;
+        that.end();
         event.preventDefault();
       }
     }
     addEventListenerWithOptions(element, 'mouseup', wrappedHandler, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchend', wrappedHandler, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, {capture: false, passive: false});
+    that.curEndHandler = endHandler;
+  }
+
+  /**
+   * @returns {void}
+   */
+  end() {
+    if (this.curEndHandler) {
+      this.curEndHandler();
+      this.curPointerClass = null;
+    }
   }
 }
 
