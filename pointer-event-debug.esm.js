@@ -139,19 +139,35 @@ var PointerEvent = function () {
     key: 'addMoveHandler',
     value: function addMoveHandler(element, moveHandler) {
       var that = this;
-      var pointerMove = AnimEvent.add(function (event) {
+      var wrappedHandler = AnimEvent.add(function (event) {
         var pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch',
             pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
         if (pointerClass === that.curPointerClass) {
-          moveHandler(pointerXY);
-          that.lastPointerXY.clientX = pointerXY.clientX;
-          that.lastPointerXY.clientY = pointerXY.clientY;
+          that.move(pointerXY);
           event.preventDefault();
         }
       });
-      addEventListenerWithOptions(element, 'mousemove', pointerMove, { capture: false, passive: false });
-      addEventListenerWithOptions(element, 'touchmove', pointerMove, { capture: false, passive: false });
+      addEventListenerWithOptions(element, 'mousemove', wrappedHandler, { capture: false, passive: false });
+      addEventListenerWithOptions(element, 'touchmove', wrappedHandler, { capture: false, passive: false });
       that.curMoveHandler = moveHandler;
+    }
+
+    /**
+     * @param {{clientX, clientY}} [pointerXY] - This might be MouseEvent, Touch of TouchEvent or Object.
+     * @returns {void}
+     */
+
+  }, {
+    key: 'move',
+    value: function move(pointerXY) {
+      if (this.curMoveHandler) {
+        if (!pointerXY) {
+          pointerXY = this.lastPointerXY;
+        }
+        this.curMoveHandler(pointerXY);
+        this.lastPointerXY.clientX = pointerXY.clientX;
+        this.lastPointerXY.clientY = pointerXY.clientY;
+      }
     }
 
     /**
@@ -164,23 +180,29 @@ var PointerEvent = function () {
     key: 'addEndHandler',
     value: function addEndHandler(element, endHandler) {
       var that = this;
-      function pointerEnd(event) {
+      function wrappedHandler(event) {
         var pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch';
         if (pointerClass === that.curPointerClass) {
-          endHandler();
-          that.curPointerClass = null;
+          that.end();
           event.preventDefault();
         }
       }
-      addEventListenerWithOptions(element, 'mouseup', pointerEnd, { capture: false, passive: false });
-      addEventListenerWithOptions(element, 'touchend', pointerEnd, { capture: false, passive: false });
-      addEventListenerWithOptions(element, 'touchcancel', pointerEnd, { capture: false, passive: false });
+      addEventListenerWithOptions(element, 'mouseup', wrappedHandler, { capture: false, passive: false });
+      addEventListenerWithOptions(element, 'touchend', wrappedHandler, { capture: false, passive: false });
+      addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, { capture: false, passive: false });
+      that.curEndHandler = endHandler;
     }
+
+    /**
+     * @returns {void}
+     */
+
   }, {
-    key: 'callMoveHandler',
-    value: function callMoveHandler() {
-      if (this.curMoveHandler) {
-        this.curMoveHandler(this.lastPointerXY);
+    key: 'end',
+    value: function end() {
+      if (this.curEndHandler) {
+        this.curEndHandler();
+        this.curPointerClass = null;
       }
     }
   }]);
