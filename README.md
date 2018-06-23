@@ -2,8 +2,6 @@
 
 Event Controller for mouse and touch interfaces
 
-*It is not documented yet.*
-
 ## Usage
 
 ```js
@@ -29,7 +27,13 @@ pointerEvent.addEndHandler(document, function() {
 });
 
 document.getElementById('move-button').addEventListener('click', function() {
-  pointerEvent.callMoveHandler(); // Call the move-handler.
+  // Emulate the `move` that is done when `mousemove` or `touchmove` is fired.
+  pointerEvent.move();
+}, false);
+
+document.getElementById('end-button').addEventListener('click', function() {
+  // Emulate the `end` that is done when `mouseup`, `touchend` or `touchcancel` is fired.
+  pointerEvent.end();
 }, false);
 
 // ============================================================================
