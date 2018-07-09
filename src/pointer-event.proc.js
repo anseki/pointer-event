@@ -46,10 +46,10 @@ class PointerEvent {
     // Options
     this.options = { // Default
       preventDefault: true,
-      stopImmediatePropagation: true
+      stopPropagation: true
     };
     if (options) {
-      ['preventDefault', 'stopImmediatePropagation'].forEach(option => {
+      ['preventDefault', 'stopPropagation'].forEach(option => {
         if (typeof options[option] === 'boolean') {
           this.options[option] = options[option];
         }
@@ -77,7 +77,7 @@ class PointerEvent {
         that.lastPointerXY.clientY = pointerXY.clientY;
         that.lastStartTime = now;
         if (that.options.preventDefault) { event.preventDefault(); }
-        if (that.options.stopImmediatePropagation) { event.stopImmediatePropagation(); }
+        if (that.options.stopPropagation) { event.stopPropagation(); }
       }
     };
     return that.lastHandlerId;
@@ -130,7 +130,7 @@ class PointerEvent {
       if (pointerClass === that.curPointerClass) {
         that.move(pointerXY);
         if (that.options.preventDefault) { event.preventDefault(); }
-        if (that.options.stopImmediatePropagation) { event.stopImmediatePropagation(); }
+        if (that.options.stopPropagation) { event.stopPropagation(); }
       }
     });
     addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
@@ -163,7 +163,7 @@ class PointerEvent {
       if (pointerClass === that.curPointerClass) {
         that.end();
         if (that.options.preventDefault) { event.preventDefault(); }
-        if (that.options.stopImmediatePropagation) { event.stopImmediatePropagation(); }
+        if (that.options.stopPropagation) { event.stopPropagation(); }
       }
     }
     addEventListenerWithOptions(element, 'mouseup', wrappedHandler, {capture: false, passive: false});
