@@ -30,13 +30,27 @@ function dragstart(event) { event.preventDefault(); }
 class PointerEvent {
   /**
    * Create a `PointerEvent` instance.
+   * @param {Object} [options] - Options
    */
-  constructor() {
+  constructor(options) {
     this.startHandlers = {};
     this.lastHandlerId = 0;
     this.curPointerClass = null;
     this.lastPointerXY = {clientX: 0, clientY: 0};
     this.lastStartTime = 0;
+
+    // Options
+    this.options = { // Default
+      preventDefault: true,
+      stopImmediatePropagation: true
+    };
+    if (options) {
+      ['preventDefault', 'stopImmediatePropagation'].forEach(option => {
+        if (typeof options[option] === 'boolean') {
+          this.options[option] = options[option];
+        }
+      });
+    }
   }
 
   /**
@@ -59,7 +73,8 @@ class PointerEvent {
         that.lastPointerXY.clientX = pointerXY.clientX;
         that.lastPointerXY.clientY = pointerXY.clientY;
         that.lastStartTime = now;
-        event.preventDefault();
+        if (that.options.preventDefault) { event.preventDefault(); }
+        if (that.options.stopImmediatePropagation) { event.stopImmediatePropagation(); }
       }
     };
     return that.lastHandlerId;
@@ -111,7 +126,8 @@ class PointerEvent {
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
       if (pointerClass === that.curPointerClass) {
         that.move(pointerXY);
-        event.preventDefault();
+        if (that.options.preventDefault) { event.preventDefault(); }
+        if (that.options.stopImmediatePropagation) { event.stopImmediatePropagation(); }
       }
     });
     addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
@@ -143,7 +159,8 @@ class PointerEvent {
       const pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch';
       if (pointerClass === that.curPointerClass) {
         that.end();
-        event.preventDefault();
+        if (that.options.preventDefault) { event.preventDefault(); }
+        if (that.options.stopImmediatePropagation) { event.stopImmediatePropagation(); }
       }
     }
     addEventListenerWithOptions(element, 'mouseup', wrappedHandler, {capture: false, passive: false});
