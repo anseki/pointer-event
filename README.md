@@ -52,6 +52,6 @@ pointerEvent.unregStartHandler(startHandlerId);
 
 // Options:
 // preventDefault {boolean} [true] - Call `event.preventDefault()` if it is `true`.
-// stopImmediatePropagation {boolean} [true] - Call `event.stopImmediatePropagation()` if it is `true`.
-var pointerEvent = new PointerEvent({stopImmediatePropagation: false}); // Don't call that.
+// stopPropagation {boolean} [true] - Call `event.stopPropagation()` if it is `true`.
+var pointerEvent = new PointerEvent({stopPropagation: false}); // Don't call that.
 ```
