@@ -440,7 +440,6 @@ var PointerEvent = function () {
       }
       addEventListenerWithOptions(element, 'mouseup', wrappedHandler, { capture: false, passive: false });
       addEventListenerWithOptions(element, 'touchend', wrappedHandler, { capture: false, passive: false });
-      // addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, {capture: false, passive: false});
       that.curEndHandler = endHandler;
     }
 
@@ -457,6 +456,42 @@ var PointerEvent = function () {
           pointerXY = this.lastPointerXY;
         }
         this.curEndHandler(pointerXY);
+        this.curPointerClass = null;
+      }
+    }
+
+    /**
+     * @param {Element} element - A target element.
+     * @param {function} cancelHandler - This is called when it cancels.
+     * @returns {void}
+     */
+
+  }, {
+    key: 'addCancelHandler',
+    value: function addCancelHandler(element, cancelHandler) {
+      var that = this;
+      function wrappedHandler() {
+        /*
+          Now, this is fired by touchcancel only, but it might be fired even if curPointerClass is mouse.
+        */
+        // const pointerClass = 'touch';
+        // if (pointerClass === that.curPointerClass) {
+        that.cancel();
+        // }
+      }
+      addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, { capture: false, passive: false });
+      that.curCancelHandler = cancelHandler;
+    }
+
+    /**
+     * @returns {void}
+     */
+
+  }, {
+    key: 'cancel',
+    value: function cancel() {
+      if (this.curCancelHandler) {
+        this.curCancelHandler();
         this.curPointerClass = null;
       }
     }
