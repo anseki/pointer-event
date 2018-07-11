@@ -414,7 +414,7 @@ var PointerEvent = function () {
 
     /**
      * @param {Element} element - A target element.
-     * @param {function} endHandler - This is called when it ends.
+     * @param {function} endHandler - This is called with pointerXY when it ends.
      * @returns {void}
      */
 
@@ -423,9 +423,13 @@ var PointerEvent = function () {
     value: function addEndHandler(element, endHandler) {
       var that = this;
       function wrappedHandler(event) {
-        var pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch';
+        var pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch',
+            pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
         if (pointerClass === that.curPointerClass) {
-          that.end();
+          if (!pointerXY) {
+            console.log('No pointerXY in event "' + event.type + '".');
+          } // [DEBUG/]
+          that.end(pointerXY);
           if (that.options.preventDefault) {
             event.preventDefault();
           }
@@ -436,19 +440,23 @@ var PointerEvent = function () {
       }
       addEventListenerWithOptions(element, 'mouseup', wrappedHandler, { capture: false, passive: false });
       addEventListenerWithOptions(element, 'touchend', wrappedHandler, { capture: false, passive: false });
-      addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, { capture: false, passive: false });
+      // addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, {capture: false, passive: false});
       that.curEndHandler = endHandler;
     }
 
     /**
+     * @param {{clientX, clientY}} [pointerXY] - This might be MouseEvent, Touch of TouchEvent or Object.
      * @returns {void}
      */
 
   }, {
     key: 'end',
-    value: function end() {
+    value: function end(pointerXY) {
       if (this.curEndHandler) {
-        this.curEndHandler();
+        if (!pointerXY) {
+          pointerXY = this.lastPointerXY;
+        }
+        this.curEndHandler(pointerXY);
         this.curPointerClass = null;
       }
     }
