@@ -129,6 +129,8 @@ class PointerEvent {
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
       if (pointerClass === that.curPointerClass) {
         that.move(pointerXY);
+        that.lastPointerXY.clientX = pointerXY.clientX;
+        that.lastPointerXY.clientY = pointerXY.clientY;
         if (that.options.preventDefault) { event.preventDefault(); }
         if (that.options.stopPropagation) { event.stopPropagation(); }
       }
@@ -146,8 +148,6 @@ class PointerEvent {
     if (this.curMoveHandler) {
       if (!pointerXY) { pointerXY = this.lastPointerXY; }
       this.curMoveHandler(pointerXY);
-      this.lastPointerXY.clientX = pointerXY.clientX;
-      this.lastPointerXY.clientY = pointerXY.clientY;
     }
   }
 
@@ -180,8 +180,8 @@ class PointerEvent {
     if (this.curEndHandler) {
       if (!pointerXY) { pointerXY = this.lastPointerXY; }
       this.curEndHandler(pointerXY);
-      this.curPointerClass = null;
     }
+    this.curPointerClass = null;
   }
 
   /**
@@ -210,8 +210,8 @@ class PointerEvent {
   cancel() {
     if (this.curCancelHandler) {
       this.curCancelHandler();
-      this.curPointerClass = null;
     }
+    this.curPointerClass = null;
   }
 }
 
