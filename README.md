@@ -23,9 +23,10 @@ pointerEvent.addMoveHandler(document, function(pointerXY) {
   console.dir(pointerXY);
 });
 
-// When `mouseup`, `touchend` or `touchcancel` is fired on this element, this end-handler is called.
-pointerEvent.addEndHandler(document, function() {
+// When `mouseup` or `touchend` is fired on this element, this end-handler is called.
+pointerEvent.addEndHandler(document, function(pointerXY) {
   console.log('[END]');
+  console.dir(pointerXY);
 });
 
 // ============================================================================
@@ -36,7 +37,7 @@ document.getElementById('move-button').addEventListener('click', function() {
 }, false);
 
 document.getElementById('end-button').addEventListener('click', function() {
-  // Emulate the `end` that is done when `mouseup`, `touchend` or `touchcancel` is fired.
+  // Emulate the `end` that is done when `mouseup` or `touchend` is fired.
   pointerEvent.end();
 }, false);
 
