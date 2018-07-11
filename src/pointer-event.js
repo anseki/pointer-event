@@ -22,14 +22,14 @@ try {
  * addEventListener with specific option.
  * @param {Element} target - An event-target element.
  * @param {string} type - The event type to listen for.
- * @param {function} handler - The EventListener.
+ * @param {function} listener - The EventListener.
  * @param {Object} options - An options object.
  * @returns {void}
  */
-function addEventListenerWithOptions(target, type, handler, options) {
+function addEventListenerWithOptions(target, type, listener, options) {
   // When `passive` is not supported, consider that the `useCapture` is supported instead of
   // `options` (i.e. options other than the `passive` also are not supported).
-  target.addEventListener(type, handler, passiveSupported ? options : options.capture);
+  target.addEventListener(type, listener, passiveSupported ? options : options.capture);
 }
 
 // Gecko, Trident pick drag-event of some elements such as img, a, etc.

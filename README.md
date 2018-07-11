@@ -69,5 +69,5 @@ var pointerEvent = new PointerEvent({stopPropagation: false}); // Don't call tha
 // ============================================================================
 
 // addEventListener with specific option.
-PointerEvent.addEventListenerWithOptions(target, type, handler, options);
+PointerEvent.addEventListenerWithOptions(target, type, listener, options);
 ```
