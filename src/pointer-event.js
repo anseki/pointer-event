@@ -10,6 +10,10 @@ import AnimEvent from 'anim-event';
 
 const DUPLICATE_INTERVAL = 400; // For avoiding mouse event that fired by touch interface
 
+// [DEBUG]
+const traceLog = [];
+// [/DEBUG]
+
 // Support options for addEventListener
 let passiveSupported = false;
 try {
@@ -68,22 +72,28 @@ class PointerEvent {
   regStartHandler(startHandler) {
     const that = this;
     that.startHandlers[++that.lastHandlerId] = event => {
+      traceLog.push('<startListener>', `type:${event.type}`); // [DEBUG/]
+      traceLog.push(`curPointerClass:${that.curPointerClass}`); // [DEBUG/]
       const pointerClass = event.type === 'mousedown' ? 'mouse' : 'touch',
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0],
         now = Date.now();
       if (that.curPointerClass && pointerClass !== that.curPointerClass &&
           now - that.lastStartTime < DUPLICATE_INTERVAL) {
         console.log(`Event "${event.type}" was ignored.`); // [DEBUG/]
+        traceLog.push('CANCEL', '</startListener>'); // [DEBUG/]
         return;
       }
       if (startHandler(pointerXY)) {
         that.curPointerClass = pointerClass;
+        traceLog.push(`curPointerClass:${that.curPointerClass}`); // [DEBUG/]
         that.lastPointerXY.clientX = pointerXY.clientX;
         that.lastPointerXY.clientY = pointerXY.clientY;
+        traceLog.push(`lastPointerXY:(${that.lastPointerXY.clientX},${that.lastPointerXY.clientY})`); // [DEBUG/]
         that.lastStartTime = now;
         if (that.options.preventDefault) { event.preventDefault(); }
         if (that.options.stopPropagation) { event.stopPropagation(); }
       }
+      traceLog.push('</startListener>'); // [DEBUG/]
     };
     return that.lastHandlerId;
   }
@@ -129,16 +139,21 @@ class PointerEvent {
    */
   addMoveHandler(element, moveHandler) {
     const that = this;
+    AnimEvent.add = listener => listener; // Disable AnimEvent [DEBUG/]
     const wrappedHandler = AnimEvent.add(event => {
+      traceLog.push('<moveListener>', `type:${event.type}`); // [DEBUG/]
+      traceLog.push(`curPointerClass:${that.curPointerClass}`); // [DEBUG/]
       const pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch',
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
       if (pointerClass === that.curPointerClass) {
         that.move(pointerXY);
         that.lastPointerXY.clientX = pointerXY.clientX;
         that.lastPointerXY.clientY = pointerXY.clientY;
+        traceLog.push(`lastPointerXY:(${that.lastPointerXY.clientX},${that.lastPointerXY.clientY})`); // [DEBUG/]
         if (that.options.preventDefault) { event.preventDefault(); }
         if (that.options.stopPropagation) { event.stopPropagation(); }
       }
+      traceLog.push('</moveListener>'); // [DEBUG/]
     });
     addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchmove', wrappedHandler, {capture: false, passive: false});
@@ -150,10 +165,13 @@ class PointerEvent {
    * @returns {void}
    */
   move(pointerXY) {
+    traceLog.push('<move>'); // [DEBUG/]
+    if (!pointerXY) { traceLog.push('NO-pointerXY'); } // [DEBUG/]
     if (this.curMoveHandler) {
       if (!pointerXY) { pointerXY = this.lastPointerXY; }
       this.curMoveHandler(pointerXY);
     }
+    traceLog.push('</move>'); // [DEBUG/]
   }
 
   /**
@@ -164,6 +182,8 @@ class PointerEvent {
   addEndHandler(element, endHandler) {
     const that = this;
     function wrappedHandler(event) {
+      traceLog.push('<endListener>', `type:${event.type}`); // [DEBUG/]
+      traceLog.push(`curPointerClass:${that.curPointerClass}`); // [DEBUG/]
       const pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch',
         pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
       if (pointerClass === that.curPointerClass) {
@@ -172,6 +192,7 @@ class PointerEvent {
         if (that.options.preventDefault) { event.preventDefault(); }
         if (that.options.stopPropagation) { event.stopPropagation(); }
       }
+      traceLog.push('</endListener>'); // [DEBUG/]
     }
     addEventListenerWithOptions(element, 'mouseup', wrappedHandler, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchend', wrappedHandler, {capture: false, passive: false});
@@ -183,11 +204,15 @@ class PointerEvent {
    * @returns {void}
    */
   end(pointerXY) {
+    traceLog.push('<end>'); // [DEBUG/]
+    if (!pointerXY) { traceLog.push('NO-pointerXY'); } // [DEBUG/]
     if (this.curEndHandler) {
       if (!pointerXY) { pointerXY = this.lastPointerXY; }
       this.curEndHandler(pointerXY);
     }
     this.curPointerClass = null;
+    traceLog.push(`curPointerClass:${this.curPointerClass}`); // [DEBUG/]
+    traceLog.push('</end>'); // [DEBUG/]
   }
 
   /**
@@ -197,7 +222,11 @@ class PointerEvent {
    */
   addCancelHandler(element, cancelHandler) {
     const that = this;
-    function wrappedHandler() {
+    function wrappedHandler(
+      event // [DEBUG/]
+    ) {
+      traceLog.push('<cancelListener>', `type:${event.type}`); // [DEBUG/]
+      traceLog.push(`curPointerClass:${that.curPointerClass}`); // [DEBUG/]
       /*
         Now, this is fired by touchcancel only, but it might be fired even if curPointerClass is mouse.
       */
@@ -205,6 +234,7 @@ class PointerEvent {
       // if (pointerClass === that.curPointerClass) {
       that.cancel();
       // }
+      traceLog.push('</cancelListener>'); // [DEBUG/]
     }
     addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, {capture: false, passive: false});
     that.curCancelHandler = cancelHandler;
@@ -214,13 +244,20 @@ class PointerEvent {
    * @returns {void}
    */
   cancel() {
+    traceLog.push('<cancel>'); // [DEBUG/]
     if (this.curCancelHandler) {
       this.curCancelHandler();
     }
     this.curPointerClass = null;
+    traceLog.push(`curPointerClass:${this.curPointerClass}`); // [DEBUG/]
+    traceLog.push('</cancel>'); // [DEBUG/]
   }
 
   static get addEventListenerWithOptions() { return addEventListenerWithOptions; }
 }
+
+// [DEBUG]
+PointerEvent.traceLog = traceLog;
+// [/DEBUG]
 
 export default PointerEvent;
