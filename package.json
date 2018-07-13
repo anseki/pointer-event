@@ -1,6 +1,6 @@
 {
   "name": "pointer-event",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "title": "PointerEvent",
   "description": "Event Controller for mouse and touch interfaces",
   "keywords": [],
