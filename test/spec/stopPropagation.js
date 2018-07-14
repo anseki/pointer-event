@@ -79,8 +79,9 @@ describe('stopPropagation', function() {
           '<parent:mousedown/>',
 
           '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-          '<move>', '</move>',
+          '<move>',
           'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '</move>',
           '</moveListener>',
 
           '<parent:mousemove/>'
@@ -107,6 +108,7 @@ describe('stopPropagation', function() {
 
           '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
           '<end>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           'curPointerClass:null',
           '</end>',
           '</endListener>',
@@ -147,8 +149,9 @@ describe('stopPropagation', function() {
           '</startListener>',
 
           '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-          '<move>', '</move>',
+          '<move>',
           'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '</move>',
           '</moveListener>'
         ]);
 
@@ -171,6 +174,7 @@ describe('stopPropagation', function() {
 
           '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
           '<end>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           'curPointerClass:null',
           '</end>',
           '</endListener>'

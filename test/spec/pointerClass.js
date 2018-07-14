@@ -74,9 +74,9 @@ describe('pointerClass', function() {
 
           '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
           '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
           '</move>',
-          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '</moveListener>'
         ]);
 
@@ -131,6 +131,7 @@ describe('pointerClass', function() {
 
           '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
           '<end>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
           'curPointerClass:null',
           '</end>',
@@ -245,9 +246,9 @@ describe('pointerClass', function() {
 
           '<moveListener>', 'type:touchmove', 'curPointerClass:touch',
           '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
           '</move>',
-          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '</moveListener>'
         ]);
 
@@ -302,6 +303,7 @@ describe('pointerClass', function() {
 
           '<endListener>', 'type:touchend', 'curPointerClass:touch',
           '<end>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
           'curPointerClass:null',
           '</end>',
@@ -509,6 +511,7 @@ describe('pointerClass', function() {
 
             '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
             '<end>',
+            'lastPointerXY:(' + X1 + ',' + Y1 + ')',
             '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
             'curPointerClass:null',
             '</end>',

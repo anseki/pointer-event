@@ -10,7 +10,7 @@ var pointerEvent = new PointerEvent(),
   // startHandlerId which is used for adding/removing to element is returned.
   startHandlerId = pointerEvent.regStartHandler(function(pointerXY) {
     console.log('[START]');
-    console.dir(pointerXY);
+    console.dir(pointerXY); // Object having `clientX` and `clientY`.
     return true; // If it returns `false`, the starting is canceled.
   });
 
@@ -20,13 +20,13 @@ pointerEvent.addStartHandler(document.getElementById('trigger'), startHandlerId)
 // When `mousemove` or `touchmove` is fired on this element, this move-handler is called.
 pointerEvent.addMoveHandler(document, function(pointerXY) {
   console.log('[MOVE]');
-  console.dir(pointerXY);
+  console.dir(pointerXY); // Object having `clientX` and `clientY`.
 });
 
 // When `mouseup` or `touchend` is fired on this element, this end-handler is called.
 pointerEvent.addEndHandler(document, function(pointerXY) {
   console.log('[END]');
-  console.dir(pointerXY);
+  console.dir(pointerXY); // Object having `clientX` and `clientY`.
 });
 
 // When `touchcancel` is fired on this element, this cancel-handler is called.
@@ -38,12 +38,12 @@ pointerEvent.addCancelHandler(document, function() {
 
 document.getElementById('move-button').addEventListener('click', function() {
   // Emulate the `move` that is done when `mousemove` or `touchmove` is fired.
-  pointerEvent.move();
+  pointerEvent.move(); // pointerXY can be passed.
 }, false);
 
 document.getElementById('end-button').addEventListener('click', function() {
   // Emulate the `end` that is done when `mouseup` or `touchend` is fired.
-  pointerEvent.end();
+  pointerEvent.end(); // pointerXY can be passed.
 }, false);
 
 document.getElementById('cancel-button').addEventListener('click', function() {
