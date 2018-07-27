@@ -318,7 +318,7 @@ var PointerEvent = function () {
           traceLog.push('CANCEL', '</startListener>'); // [DEBUG/]
           return;
         }
-        if (startHandler(pointerXY)) {
+        if (startHandler.call(that, pointerXY)) {
           that.curPointerClass = pointerClass;
           traceLog.push('curPointerClass:' + that.curPointerClass); // [DEBUG/]
           that.lastPointerXY.clientX = pointerXY.clientX;
