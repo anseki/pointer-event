@@ -11,6 +11,7 @@ var pointerEvent = new PointerEvent(),
   startHandlerId = pointerEvent.regStartHandler(function(pointerXY) {
     console.log('[START]');
     console.dir(pointerXY); // Object having `clientX` and `clientY`.
+    this.options.stopPropagation = false; // Access to current instance via `this`.
     return true; // If it returns `false`, the starting is canceled.
   });
 
@@ -21,17 +22,20 @@ pointerEvent.addStartHandler(document.getElementById('trigger'), startHandlerId)
 pointerEvent.addMoveHandler(document, function(pointerXY) {
   console.log('[MOVE]');
   console.dir(pointerXY); // Object having `clientX` and `clientY`.
+  this.options.stopPropagation = false; // Access to current instance via `this`.
 });
 
 // When `mouseup` or `touchend` is fired on this element, this end-handler is called.
 pointerEvent.addEndHandler(document, function(pointerXY) {
   console.log('[END]');
   console.dir(pointerXY); // Object having `clientX` and `clientY`.
+  this.options.stopPropagation = false; // Access to current instance via `this`.
 });
 
 // When `touchcancel` is fired on this element, this cancel-handler is called.
 pointerEvent.addCancelHandler(document, function() {
   console.log('[CANCEL]');
+  console.log(this.options.stopPropagation); // Access to current instance via `this`.
 });
 
 // ============================================================================

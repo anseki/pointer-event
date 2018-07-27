@@ -80,7 +80,7 @@ class PointerEvent {
           now - that.lastStartTime < DUPLICATE_INTERVAL) {
         return;
       }
-      if (startHandler(pointerXY)) {
+      if (startHandler.call(that, pointerXY)) {
         that.curPointerClass = pointerClass;
         that.lastPointerXY.clientX = pointerXY.clientX;
         that.lastPointerXY.clientY = pointerXY.clientY;
