@@ -14,6 +14,7 @@ describe('pointerClass', function() {
 
   function resetData() {
     pointerEvent.cancel();
+    pointerEvent.lastTouchTime = 0;
     traceLog.length = 0;
     startHandlerReturn = true;
   }
