@@ -11,10 +11,15 @@ var utils = (function() {
     target.dispatchEvent(new MouseEvent(type, pointerXY));
   }
 
-  function fireTouchEvent(target, type, pointerXY) {
-    pointerXY.identifier = identifier++;
-    pointerXY.target = target;
-    target.dispatchEvent(new TouchEvent(type, {targetTouches: [new Touch(pointerXY)]}));
+  function fireTouchEvent(target, type, pointerXY) { // pointerXY or touchEventInit{changedTouches}
+    if (pointerXY.changedTouches) {
+      pointerXY.bubbles = true;
+      target.dispatchEvent(new TouchEvent(type, pointerXY));
+    } else { // Auto init
+      pointerXY.identifier = identifier++;
+      pointerXY.target = target;
+      target.dispatchEvent(new TouchEvent(type, {targetTouches: [new Touch(pointerXY)]}));
+    }
   }
 
   function logPointerXY(pointerXY) {
