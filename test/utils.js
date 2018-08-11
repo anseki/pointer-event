@@ -5,11 +5,39 @@
 var utils = (function() {
   'use strict';
 
-  var identifier = 0;
+  var DEFAULT_INTERVAL = 10;
+
+  function intervalExec(list) {
+    var interval = 1, // default value for first
+      index = -1;
+
+    function execNext() {
+      var fnc;
+      while (++index <= list.length - 1) {
+        if (typeof list[index] === 'number') {
+          interval = list[index];
+        } else if (typeof list[index] === 'function') {
+          fnc = list[index];
+          break;
+        }
+      }
+      if (fnc) {
+        setTimeout(function() {
+          fnc();
+          interval = DEFAULT_INTERVAL;
+          execNext();
+        }, interval);
+      }
+    }
+
+    execNext();
+  }
 
   function fireMouseEvent(target, type, pointerXY) {
     target.dispatchEvent(new MouseEvent(type, pointerXY));
   }
+
+  var identifier = 0;
 
   function fireTouchEvent(target, type, pointerXY) { // pointerXY or touchEventInit{changedTouches}
     if (pointerXY.changedTouches) {
@@ -28,6 +56,7 @@ var utils = (function() {
   }
 
   return {
+    intervalExec: intervalExec,
     fireMouseEvent: fireMouseEvent,
     fireTouchEvent: fireTouchEvent,
     logPointerXY: logPointerXY

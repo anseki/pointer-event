@@ -9,9 +9,7 @@ describe('pointerXY', function() {
     X2 = 4,
     Y2 = 8,
     X3 = 16,
-    Y3 = 32,
-
-    TIME_SPAN = 10;
+    Y3 = 32;
 
   function resetData() {
     pointerEvent.cancel();
@@ -57,541 +55,571 @@ describe('pointerXY', function() {
 
   it('mousemove', function(done) {
     resetData();
-
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-
-      utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
-
+    utils.intervalExec([
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
-        setTimeout(function() {
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-          utils.fireMouseEvent(document, 'mousemove', {clientX: X1, clientY: Y1});
-          setTimeout(function() {
-            expect(traceLog).toEqual([
-              '<startListener>', 'type:mousedown', 'curPointerClass:null',
-              '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-              'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-              '</startListener>',
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-              '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-              '<move>',
-              'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-              '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-              '</move>',
-              '</moveListener>',
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-              '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-              '<move>',
-              'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-              '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-              '</move>',
-              '</moveListener>',
-
-              '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-              '<move>',
-              'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-              '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-              '</move>',
-              '</moveListener>'
-            ]);
-
-            done();
-          }, TIME_SPAN);
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('mousemove + move()', function(done) {
     resetData();
-
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-
-      pointerEvent.move();
-      setTimeout(function() {
-
+    utils.intervalExec([
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move();
+      },
+      // ====================================
+      function() {
         utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-        setTimeout(function() {
+      },
+      // ====================================
+      function() {
+        pointerEvent.move();
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
+      },
+      // ====================================
+      function() {
+        // Fire again
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move();
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-          pointerEvent.move();
-          setTimeout(function() {
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
 
-            utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
-            setTimeout(function() {
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-              // Fire again
-              utils.fireMouseEvent(document, 'mousemove', {clientX: X1, clientY: Y1});
-              setTimeout(function() {
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
 
-                pointerEvent.move();
-                setTimeout(function() {
-                  expect(traceLog).toEqual([
-                    '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                    '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                    'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                    '</startListener>',
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                    // Call move()
-                    '<move>', 'NO-pointerXY',
-                    '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                    '</move>',
+          // Fire again
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                    '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                    '<move>',
-                    'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                    '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                    '</move>',
-                    '</moveListener>',
-
-                    // Call move()
-                    '<move>', 'NO-pointerXY',
-                    '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                    '</move>',
-
-                    '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                    '<move>',
-                    'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                    '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                    '</move>',
-                    '</moveListener>',
-
-                    // Fire again
-                    '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                    '<move>',
-                    'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                    '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                    '</move>',
-                    '</moveListener>',
-
-                    // Call move()
-                    '<move>', 'NO-pointerXY',
-                    '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                    '</move>'
-                  ]);
-
-                  done();
-                }, TIME_SPAN);
-              }, TIME_SPAN);
-            }, TIME_SPAN);
-          }, TIME_SPAN);
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('mousemove + move(XY)', function(done) {
     resetData();
-
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-
-      pointerEvent.move();
-      pointerEvent.move({clientX: X3, clientY: Y3});
-      pointerEvent.move();
-      setTimeout(function() {
-
+    utils.intervalExec([
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move();
+        pointerEvent.move({clientX: X3, clientY: Y3});
+        pointerEvent.move();
+      },
+      // ====================================
+      function() {
         utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-        setTimeout(function() {
+      },
+      // ====================================
+      function() {
+        pointerEvent.move({clientX: X1, clientY: Y1});
+        pointerEvent.move();
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move({clientX: X3, clientY: Y3});
+        pointerEvent.move();
 
-          pointerEvent.move({clientX: X1, clientY: Y1});
-          pointerEvent.move();
-          setTimeout(function() {
+        pointerEvent.move({clientX: X1, clientY: Y1});
+        pointerEvent.move({clientX: X2, clientY: Y2});
+        pointerEvent.move();
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-            utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
-            setTimeout(function() {
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
 
-              pointerEvent.move({clientX: X3, clientY: Y3});
-              pointerEvent.move();
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
 
-              pointerEvent.move({clientX: X1, clientY: Y1});
-              pointerEvent.move({clientX: X2, clientY: Y2});
-              pointerEvent.move();
-              setTimeout(function() {
-                expect(traceLog).toEqual([
-                  '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                  '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                  'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                  '</startListener>',
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
 
-                  // Call move()
-                  '<move>', 'NO-pointerXY',
-                  '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                  '</move>',
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                  // Call move()
-                  '<move>',
-                  'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                  '</move>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
 
-                  // Call move()
-                  '<move>', 'NO-pointerXY',
-                  '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                  '</move>',
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
 
-                  '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                  '<move>',
-                  'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                  '</move>',
-                  '</moveListener>',
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                  // Call move()
-                  '<move>',
-                  'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                  '</move>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
 
-                  // Call move()
-                  '<move>', 'NO-pointerXY',
-                  '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                  '</move>',
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
 
-                  '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                  '<move>',
-                  'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                  '</move>',
-                  '</moveListener>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
 
-                  // Call move()
-                  '<move>',
-                  'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                  '</move>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
 
-                  // Call move()
-                  '<move>', 'NO-pointerXY',
-                  '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                  '</move>',
-
-                  // Call move()
-                  '<move>',
-                  'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                  '</move>',
-
-                  // Call move()
-                  '<move>',
-                  'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                  '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                  '</move>',
-
-                  // Call move()
-                  '<move>', 'NO-pointerXY',
-                  '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                  '</move>'
-                ]);
-
-                done();
-              }, TIME_SPAN);
-            }, TIME_SPAN);
-          }, TIME_SPAN);
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          // Call move()
+          '<move>', 'NO-pointerXY',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('mouseup', function(done) {
     resetData();
-
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-
-      utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
-
+    utils.intervalExec([
+      // ====================================
+      function() {
         utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-        setTimeout(function() {
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mouseup', {clientX: X3, clientY: Y3});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-          utils.fireMouseEvent(document, 'mouseup', {clientX: X3, clientY: Y3});
-          setTimeout(function() {
-            expect(traceLog).toEqual([
-              '<startListener>', 'type:mousedown', 'curPointerClass:null',
-              '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-              'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-              '</startListener>',
+          '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
+          '<end>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
+          '</endListener>',
 
-              '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
-              '<end>',
-              'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-              '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
-              'curPointerClass:null',
-              '</end>',
-              '</endListener>',
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-              '<startListener>', 'type:mousedown', 'curPointerClass:null',
-              '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-              'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-              '</startListener>',
-
-              '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
-              '<end>',
-              'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-              '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
-              'curPointerClass:null',
-              '</end>',
-              '</endListener>'
-            ]);
-
-            done();
-          }, TIME_SPAN);
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
+          '<end>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
+          '</endListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('mousemove/move(XY) + end()', function(done) {
     resetData();
-
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-
-      pointerEvent.end();
-      setTimeout(function() {
-
+    utils.intervalExec([
+      // ====================================
+      function() {
         utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-        setTimeout(function() {
+      },
+      // ====================================
+      function() {
+        pointerEvent.end();
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        pointerEvent.end();
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
+      },
+      // ====================================
+      function() {
+        // Fire again
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.end();
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move({clientX: X2, clientY: Y2});
+        pointerEvent.end();
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move({clientX: X2, clientY: Y2});
+        pointerEvent.move({clientX: X3, clientY: Y3});
+        pointerEvent.end();
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-          utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-          setTimeout(function() {
+          // Call end()
+          '<end>', 'NO-pointerXY',
+          '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-            pointerEvent.end();
-            setTimeout(function() {
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-              utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-              setTimeout(function() {
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                utils.fireMouseEvent(document, 'mousemove', {clientX: X3, clientY: Y3});
-                setTimeout(function() {
+          // Call end()
+          '<end>', 'NO-pointerXY',
+          '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-                  // Fire again
-                  utils.fireMouseEvent(document, 'mousemove', {clientX: X1, clientY: Y1});
-                  setTimeout(function() {
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-                    pointerEvent.end();
-                    setTimeout(function() {
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                      utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-                      setTimeout(function() {
+          // Fire again
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                        pointerEvent.move({clientX: X2, clientY: Y2});
-                        pointerEvent.end();
-                        setTimeout(function() {
+          // Call end()
+          '<end>', 'NO-pointerXY',
+          '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-                          utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-                          setTimeout(function() {
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-                            pointerEvent.move({clientX: X2, clientY: Y2});
-                            pointerEvent.move({clientX: X3, clientY: Y3});
-                            pointerEvent.end();
-                            setTimeout(function() {
-                              expect(traceLog).toEqual([
-                                '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                                '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                                'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                                '</startListener>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
 
-                                // Call end()
-                                '<end>', 'NO-pointerXY',
-                                '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
-                                'curPointerClass:null',
-                                '</end>',
+          // Call end()
+          '<end>', 'NO-pointerXY',
+          '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-                                '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                                '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                                'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                                '</startListener>',
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-                                '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                                '<move>',
-                                'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                                '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                                '</move>',
-                                '</moveListener>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
 
-                                // Call end()
-                                '<end>', 'NO-pointerXY',
-                                '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
-                                'curPointerClass:null',
-                                '</end>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
 
-                                '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                                '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                                'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                                '</startListener>',
-
-                                '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                                '<move>',
-                                'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                                '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                                '</move>',
-                                '</moveListener>',
-
-                                // Fire again
-                                '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                                '<move>',
-                                'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                                '<moveHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</moveHandler>',
-                                '</move>',
-                                '</moveListener>',
-
-                                // Call end()
-                                '<end>', 'NO-pointerXY',
-                                '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
-                                'curPointerClass:null',
-                                '</end>',
-
-                                '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                                '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                                'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                                '</startListener>',
-
-                                // Call move()
-                                '<move>',
-                                'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                                '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                                '</move>',
-
-                                // Call end()
-                                '<end>', 'NO-pointerXY',
-                                '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
-                                'curPointerClass:null',
-                                '</end>',
-
-                                '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                                '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                                'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                                '</startListener>',
-
-                                // Call move()
-                                '<move>',
-                                'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                                '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                                '</move>',
-
-                                // Call move()
-                                '<move>',
-                                'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                                '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                                '</move>',
-
-                                // Call end()
-                                '<end>', 'NO-pointerXY',
-                                '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
-                                'curPointerClass:null',
-                                '</end>'
-                              ]);
-
-                              done();
-                            }, TIME_SPAN);
-                          }, TIME_SPAN);
-                        }, TIME_SPAN);
-                      }, TIME_SPAN);
-                    }, TIME_SPAN);
-                  }, TIME_SPAN);
-                }, TIME_SPAN);
-              }, TIME_SPAN);
-            }, TIME_SPAN);
-          }, TIME_SPAN);
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          // Call end()
+          '<end>', 'NO-pointerXY',
+          '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('mousemove/move(XY) + end(XY)', function(done) {
     resetData();
-
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-
-      pointerEvent.end({clientX: X3, clientY: Y3});
-      setTimeout(function() {
-
+    utils.intervalExec([
+      // ====================================
+      function() {
         utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-        setTimeout(function() {
+      },
+      // ====================================
+      function() {
+        pointerEvent.end({clientX: X3, clientY: Y3});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        pointerEvent.end({clientX: X3, clientY: Y3});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        pointerEvent.move({clientX: X2, clientY: Y2});
+        pointerEvent.move({clientX: X3, clientY: Y3});
+        pointerEvent.end({clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-          utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-          setTimeout(function() {
+          // Call end()
+          '<end>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-            pointerEvent.end({clientX: X3, clientY: Y3});
-            setTimeout(function() {
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-              utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-              setTimeout(function() {
+          '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
+          '</moveListener>',
 
-                pointerEvent.move({clientX: X2, clientY: Y2});
-                pointerEvent.move({clientX: X3, clientY: Y3});
-                pointerEvent.end({clientX: X1, clientY: Y1});
-                setTimeout(function() {
-                  expect(traceLog).toEqual([
-                    '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                    '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                    'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                    '</startListener>',
+          // Call end()
+          '<end>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-                    // Call end()
-                    '<end>',
-                    'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                    '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
-                    'curPointerClass:null',
-                    '</end>',
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-                    '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                    '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                    'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                    '</startListener>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
+          '</move>',
 
-                    '<moveListener>', 'type:mousemove', 'curPointerClass:mouse',
-                    '<move>',
-                    'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                    '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                    '</move>',
-                    '</moveListener>',
+          // Call move()
+          '<move>',
+          'lastPointerXY:(' + X3 + ',' + Y3 + ')',
+          '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
+          '</move>',
 
-                    // Call end()
-                    '<end>',
-                    'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                    '<endHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</endHandler>',
-                    'curPointerClass:null',
-                    '</end>',
-
-                    '<startListener>', 'type:mousedown', 'curPointerClass:null',
-                    '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-                    'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                    '</startListener>',
-
-                    // Call move()
-                    '<move>',
-                    'lastPointerXY:(' + X2 + ',' + Y2 + ')',
-                    '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
-                    '</move>',
-
-                    // Call move()
-                    '<move>',
-                    'lastPointerXY:(' + X3 + ',' + Y3 + ')',
-                    '<moveHandler>', 'pointerXY:(' + X3 + ',' + Y3 + ')', '</moveHandler>',
-                    '</move>',
-
-                    // Call end()
-                    '<end>',
-                    'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-                    '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
-                    'curPointerClass:null',
-                    '</end>'
-                  ]);
-
-                  done();
-                }, TIME_SPAN);
-              }, TIME_SPAN);
-            }, TIME_SPAN);
-          }, TIME_SPAN);
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          // Call end()
+          '<end>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
 });

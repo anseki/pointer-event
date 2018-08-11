@@ -8,9 +8,7 @@ describe('stopPropagation', function() {
     X1 = 1,
     Y1 = 2,
     X2 = 4,
-    Y2 = 8,
-
-    TIME_SPAN = 10;
+    Y2 = 8;
 
   function resetData() {
     pointerEvent.cancel();
@@ -59,28 +57,41 @@ describe('stopPropagation', function() {
 
   it('start(stopPropagation:OFF)', function(done) {
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      expect(traceLog).toEqual([
-        '<startListener>', 'type:mousedown', 'curPointerClass:null',
-        'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-        '</startListener>',
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-        '<parent:mousedown/>'
-      ]);
-
-      done();
-    }, TIME_SPAN);
+          '<parent:mousedown/>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('move(stopPropagation:OFF)', function(done) {
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -96,19 +107,26 @@ describe('stopPropagation', function() {
 
           '<parent:mousemove/>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('end(stopPropagation:OFF)', function(done) {
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -125,34 +143,47 @@ describe('stopPropagation', function() {
 
           '<parent:mouseup/>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(stopPropagation:ON)', function(done) {
     resetData();
-    pointerEvent.options.stopPropagation = true;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      expect(traceLog).toEqual([
-        '<startListener>', 'type:mousedown', 'curPointerClass:null',
-        'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-        '</startListener>'
-      ]);
-
-      done();
-    }, TIME_SPAN);
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = true;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('move(stopPropagation:ON)', function(done) {
     resetData();
-    pointerEvent.options.stopPropagation = true;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = true;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -164,19 +195,26 @@ describe('stopPropagation', function() {
           '</move>',
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('end(stopPropagation:ON)', function(done) {
     resetData();
-    pointerEvent.options.stopPropagation = true;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = true;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -189,10 +227,10 @@ describe('stopPropagation', function() {
           '</end>',
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(stopPropagation:OFF -> ON in handler)', function(done) {
@@ -203,21 +241,28 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      expect(traceLog).toEqual([
-        '<startListener>', 'type:mousedown', 'curPointerClass:null',
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
 
-        'CHANGE:options.stopPropagation',
+          'CHANGE:options.stopPropagation',
 
-        'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-        '</startListener>'
-      ]);
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>'
+        ]);
 
-      nestStartHandler = null;
-      done();
-    }, TIME_SPAN);
+        nestStartHandler = null;
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('move(stopPropagation:OFF -> ON in handler)', function(done) {
@@ -228,11 +273,18 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -251,9 +303,10 @@ describe('stopPropagation', function() {
         ]);
 
         nestMoveHandler = null;
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('end(stopPropagation:OFF -> ON in handler)', function(done) {
@@ -264,11 +317,18 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -288,9 +348,10 @@ describe('stopPropagation', function() {
         ]);
 
         nestEndHandler = null;
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(stopPropagation:ON -> OFF in handler)', function(done) {
@@ -301,23 +362,30 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = true;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      expect(traceLog).toEqual([
-        '<startListener>', 'type:mousedown', 'curPointerClass:null',
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = true;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
 
-        'CHANGE:options.stopPropagation',
+          'CHANGE:options.stopPropagation',
 
-        'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-        '</startListener>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-        '<parent:mousedown/>'
-      ]);
+          '<parent:mousedown/>'
+        ]);
 
-      nestStartHandler = null;
-      done();
-    }, TIME_SPAN);
+        nestStartHandler = null;
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('move(stopPropagation:ON -> OFF in handler)', function(done) {
@@ -328,11 +396,18 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = true;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = true;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mousemove', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -351,9 +426,10 @@ describe('stopPropagation', function() {
         ]);
 
         nestMoveHandler = null;
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('end(stopPropagation:ON -> OFF in handler)', function(done) {
@@ -364,11 +440,18 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = true;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = true;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        utils.fireMouseEvent(elmChild, 'mouseup', {clientX: X2, clientY: Y2, bubbles: true});
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -388,9 +471,10 @@ describe('stopPropagation', function() {
         ]);
 
         nestEndHandler = null;
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('`this` in cancel()', function(done) {
@@ -400,11 +484,18 @@ describe('stopPropagation', function() {
     };
 
     resetData();
-    pointerEvent.options.stopPropagation = false;
-    utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
-    setTimeout(function() {
-      pointerEvent.cancel();
-      setTimeout(function() {
+    utils.intervalExec([
+      // ====================================
+      function() {
+        pointerEvent.options.stopPropagation = false;
+        utils.fireMouseEvent(elmChild, 'mousedown', {clientX: X1, clientY: Y1, bubbles: true});
+      },
+      // ====================================
+      function() {
+        pointerEvent.cancel();
+      },
+      // ====================================
+      function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
@@ -421,9 +512,10 @@ describe('stopPropagation', function() {
         ]);
 
         nestCancelHandler = null;
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
 });

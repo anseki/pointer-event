@@ -6,9 +6,7 @@ describe('add/remove', function() {
     startHandlerCalled,
 
     X1 = 1,
-    Y1 = 2,
-
-    TIME_SPAN = 10;
+    Y1 = 2;
 
   function resetData() {
     pointerEvent.cancel();
@@ -40,31 +38,38 @@ describe('add/remove', function() {
     var handlerId;
 
     resetData();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        startHandlerCalled = false;
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(startHandlerCalled).toBe(false); // Not called
 
-    startHandlerCalled = false;
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(startHandlerCalled).toBe(false); // Not called
+        handlerId = pointerEvent.regStartHandler(startHandler);
+        pointerEvent.addStartHandler(elmTarget, handlerId);
 
-      handlerId = pointerEvent.regStartHandler(startHandler);
-      pointerEvent.addStartHandler(elmTarget, handlerId);
-
-      startHandlerCalled = false;
-      utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-      setTimeout(function() {
+        startHandlerCalled = false;
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
         expect(startHandlerCalled).toBe(true); // Called
 
         pointerEvent.removeStartHandler(elmTarget, handlerId);
 
         startHandlerCalled = false;
         utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-        setTimeout(function() {
-          expect(startHandlerCalled).toBe(false); // Not called
-
-          done();
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      function() {
+        expect(startHandlerCalled).toBe(false); // Not called
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('checks handlerId', function() {

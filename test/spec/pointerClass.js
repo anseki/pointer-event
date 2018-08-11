@@ -8,9 +8,7 @@ describe('pointerClass', function() {
     X1 = 1,
     Y1 = 2,
     X2 = 4,
-    Y2 = 8,
-
-    TIME_SPAN = 10;
+    Y2 = 8;
 
   function resetData() {
     pointerEvent.cancel();
@@ -58,14 +56,21 @@ describe('pointerClass', function() {
 
   it('start(mouse) -> move(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBe('mouse');
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -80,22 +85,29 @@ describe('pointerClass', function() {
           '</move>',
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> move(touch)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireTouchEvent(document, 'touchmove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchmove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBe('mouse');
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -107,22 +119,29 @@ describe('pointerClass', function() {
           // Cancel
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> end(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -138,22 +157,29 @@ describe('pointerClass', function() {
           '</end>',
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> end(touch)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireTouchEvent(document, 'touchend', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchend', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBe('mouse');
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -165,22 +191,29 @@ describe('pointerClass', function() {
           // Cancel
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> cancel(touch)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireTouchEvent(document, 'touchcancel', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchcancel', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -195,22 +228,29 @@ describe('pointerClass', function() {
           '</cancel>',
           '</cancelListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(touch) -> move(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('touch');
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
 
-      utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBe('touch');
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
@@ -222,22 +262,29 @@ describe('pointerClass', function() {
           // Cancel
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(touch) -> move(touch)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('touch');
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
 
-      utils.fireTouchEvent(document, 'touchmove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchmove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBe('touch');
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
@@ -252,22 +299,29 @@ describe('pointerClass', function() {
           '</move>',
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(touch) -> end(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('touch');
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
 
-      utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBe('touch');
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
@@ -279,22 +333,29 @@ describe('pointerClass', function() {
           // Cancel
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(touch) -> end(touch)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('touch');
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
 
-      utils.fireTouchEvent(document, 'touchend', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchend', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
@@ -310,22 +371,29 @@ describe('pointerClass', function() {
           '</end>',
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(touch) -> cancel(touch)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('touch');
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
 
-      utils.fireTouchEvent(document, 'touchcancel', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchcancel', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
@@ -340,23 +408,30 @@ describe('pointerClass', function() {
           '</cancel>',
           '</cancelListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(CANCEL) -> move(mouse)', function(done) {
     resetData();
-    startHandlerReturn = false;
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        startHandlerReturn = false;
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBeNull();
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-      utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -368,23 +443,30 @@ describe('pointerClass', function() {
           // Cancel
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(CANCEL) -> move(touch)', function(done) {
     resetData();
-    startHandlerReturn = false;
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        startHandlerReturn = false;
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBeNull();
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-      utils.fireTouchEvent(document, 'touchmove', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchmove', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -396,23 +478,30 @@ describe('pointerClass', function() {
           // Cancel
           '</moveListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(CANCEL) -> end(mouse)', function(done) {
     resetData();
-    startHandlerReturn = false;
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        startHandlerReturn = false;
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBeNull();
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-      utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mouseup', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -424,23 +513,30 @@ describe('pointerClass', function() {
           // Cancel
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(CANCEL) -> end(touch)', function(done) {
     resetData();
-    startHandlerReturn = false;
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        startHandlerReturn = false;
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBeNull();
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-      utils.fireTouchEvent(document, 'touchend', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchend', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -452,23 +548,30 @@ describe('pointerClass', function() {
           // Cancel
           '</endListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(CANCEL) -> cancel(touch)', function(done) {
     resetData();
-    startHandlerReturn = false;
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        startHandlerReturn = false;
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBeNull();
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-      utils.fireTouchEvent(document, 'touchcancel', {clientX: X2, clientY: Y2});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchcancel', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
         expect(traceLog).toEqual([
           '<startListener>', 'type:mousedown', 'curPointerClass:null',
@@ -483,163 +586,195 @@ describe('pointerClass', function() {
           '</cancel>',
           '</cancelListener>'
         ]);
-
-        done();
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> end(mouse) -> move(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireMouseEvent(document, 'mouseup', {clientX: X1, clientY: Y1});
-      setTimeout(function() {
+        utils.fireMouseEvent(document, 'mouseup', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
 
         utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-        setTimeout(function() {
-          expect(pointerEvent.curPointerClass).toBeNull();
-          expect(traceLog).toEqual([
-            '<startListener>', 'type:mousedown', 'curPointerClass:null',
-            '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-            'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-            '</startListener>',
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-            '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
-            '<end>',
-            'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-            '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
-            'curPointerClass:null',
-            '</end>',
-            '</endListener>',
+          '<endListener>', 'type:mouseup', 'curPointerClass:mouse',
+          '<end>',
+          'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
+          '</endListener>',
 
-            '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-            // Cancel
-            '</moveListener>'
-          ]);
-
-          done();
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
+          // Cancel
+          '</moveListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> cancel(touch) -> move(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      utils.fireTouchEvent(document, 'touchcancel', {clientX: X1, clientY: Y1});
-      setTimeout(function() {
+        utils.fireTouchEvent(document, 'touchcancel', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
 
         utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-        setTimeout(function() {
-          expect(pointerEvent.curPointerClass).toBeNull();
-          expect(traceLog).toEqual([
-            '<startListener>', 'type:mousedown', 'curPointerClass:null',
-            '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-            'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-            '</startListener>',
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-            '<cancelListener>', 'type:touchcancel', 'curPointerClass:mouse',
-            '<cancel>',
-            '<cancelHandler>', '</cancelHandler>',
-            'curPointerClass:null',
-            '</cancel>',
-            '</cancelListener>',
+          '<cancelListener>', 'type:touchcancel', 'curPointerClass:mouse',
+          '<cancel>',
+          '<cancelHandler>', '</cancelHandler>',
+          'curPointerClass:null',
+          '</cancel>',
+          '</cancelListener>',
 
-            '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-            // Cancel
-            '</moveListener>'
-          ]);
-
-          done();
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
+          // Cancel
+          '</moveListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> CALL end() -> move(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      pointerEvent.end();
-      setTimeout(function() {
+        pointerEvent.end();
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
 
         utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-        setTimeout(function() {
-          expect(pointerEvent.curPointerClass).toBeNull();
-          expect(traceLog).toEqual([
-            '<startListener>', 'type:mousedown', 'curPointerClass:null',
-            '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-            'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-            '</startListener>',
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-            '<end>', 'NO-pointerXY',
-            '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
-            'curPointerClass:null',
-            '</end>',
+          '<end>', 'NO-pointerXY',
+          '<endHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</endHandler>',
+          'curPointerClass:null',
+          '</end>',
 
-            '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-            // Cancel
-            '</moveListener>'
-          ]);
-
-          done();
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
+          // Cancel
+          '</moveListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
   it('start(mouse) -> CALL cancel() -> move(mouse)', function(done) {
     resetData();
-    expect(pointerEvent.curPointerClass).toBeNull();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
 
-    utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
-    setTimeout(function() {
-      expect(pointerEvent.curPointerClass).toBe('mouse');
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
 
-      pointerEvent.cancel();
-      setTimeout(function() {
+        pointerEvent.cancel();
+      },
+      // ====================================
+      function() {
         expect(pointerEvent.curPointerClass).toBeNull();
 
         utils.fireMouseEvent(document, 'mousemove', {clientX: X2, clientY: Y2});
-        setTimeout(function() {
-          expect(pointerEvent.curPointerClass).toBeNull();
-          expect(traceLog).toEqual([
-            '<startListener>', 'type:mousedown', 'curPointerClass:null',
-            '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-            'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
-            '</startListener>',
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
 
-            '<cancel>',
-            '<cancelHandler>', '</cancelHandler>',
-            'curPointerClass:null',
-            '</cancel>',
+          '<cancel>',
+          '<cancelHandler>', '</cancelHandler>',
+          'curPointerClass:null',
+          '</cancel>',
 
-            '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-            // Cancel
-            '</moveListener>'
-          ]);
-
-          done();
-        }, TIME_SPAN);
-      }, TIME_SPAN);
-    }, TIME_SPAN);
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
+          // Cancel
+          '</moveListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
   });
 
 });
