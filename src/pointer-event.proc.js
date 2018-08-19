@@ -44,8 +44,10 @@ function addEventListenerWithOptions(target, type, listener, options) {
  * @returns {(Touch|null)} - A found Touch instance.
  */
 function getTouchById(touches, id) {
-  for (let i = 0; i < touches.length; i++) {
-    if (touches[i].identifier === id) { return touches[i]; }
+  if (touches != null && id != null) {
+    for (let i = 0; i < touches.length; i++) {
+      if (touches[i].identifier === id) { return touches[i]; }
+    }
   }
   return null;
 }
