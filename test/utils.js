@@ -46,7 +46,11 @@ var utils = (function() {
     } else { // Auto init
       pointerXY.identifier = identifier++;
       pointerXY.target = target;
-      target.dispatchEvent(new TouchEvent(type, {targetTouches: [new Touch(pointerXY)]}));
+      var touch = new Touch(pointerXY);
+      target.dispatchEvent(new TouchEvent(type, {
+        changedTouches: [touch],
+        touches: type === 'touchstart' || type === 'touchmove' ? [touch] : []
+      }));
     }
   }
 
