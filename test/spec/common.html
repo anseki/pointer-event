@@ -6,14 +6,19 @@
   <script src="/pointer-event.js"></script>
   <style>
 
+div {
+  height: 16px;
+}
+
 #parent {
   padding: 30px;
   background-color: green;
 }
 
-#child {
-  background-color: orange;
-}
+#child { background-color: orange; }
+#div2 { background-color: firebrick; }
+#div3 { background-color: dodgerblue; }
+#another { background-color: mediumvioletred; }
 
   </style>
 </head>
@@ -22,6 +27,10 @@
   <div id="parent">
     <div id="child"></div>
   </div>
+
+  <div id="div2"></div>
+  <div id="div3"></div>
+  <div id="another"></div>
 
 </body>
 </html>
