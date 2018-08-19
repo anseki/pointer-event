@@ -37,6 +37,27 @@ function addEventListenerWithOptions(target, type, listener, options) {
   target.addEventListener(type, listener, passiveSupported ? options : options.capture);
 }
 
+/**
+ * Get Touch instance in list.
+ * @param {Touch[]} touches - An Array or TouchList instance.
+ * @param {number} id - Touch#identifier
+ * @returns {(Touch|null)} - A found Touch instance.
+ */
+function getTouchById(touches, id) {
+  for (let i = 0; i < touches.length; i++) {
+    if (touches[i].identifier === id) { return touches[i]; }
+  }
+  return null;
+}
+
+/**
+ * @param {Object} xy - Something that might have clientX and clientY.
+ * @returns {boolean} - `true` if it has valid clientX and clientY.
+ */
+function hasXY(xy) {
+  return xy && typeof xy.clientX === 'number' && typeof xy.clientY === 'number';
+}
+
 // Gecko, Trident pick drag-event of some elements such as img, a, etc.
 function dragstart(event) { event.preventDefault(); }
 
@@ -49,6 +70,7 @@ class PointerEvent {
     this.startHandlers = {};
     this.lastHandlerId = 0;
     this.curPointerClass = null;
+    this.curTouchId = null;
     this.lastPointerXY = {clientX: 0, clientY: 0};
     this.lastTouchTime = 0;
 
@@ -74,18 +96,28 @@ class PointerEvent {
     const that = this;
     that.startHandlers[++that.lastHandlerId] = event => {
       const pointerClass = event.type === 'mousedown' ? 'mouse' : 'touch',
-        pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0],
         now = Date.now();
+      let pointerXY, touchId;
 
-      // Avoid mouse events emulation
       if (pointerClass === 'touch') {
-        that.lastTouchTime = now;
-      } else if (now - that.lastTouchTime < MOUSE_EMU_INTERVAL) {
-        return;
+        that.lastTouchTime = now; // Avoid mouse events emulation
+        pointerXY = event.changedTouches[0];
+        touchId = event.changedTouches[0].identifier;
+      } else {
+        // Avoid mouse events emulation
+        if (now - that.lastTouchTime < MOUSE_EMU_INTERVAL) {
+          return;
+        }
+        pointerXY = event;
       }
+      if (!hasXY(pointerXY)) { throw new Error('No clientX/clientY'); }
+
+      // It is new one even if those are 'mouse' or ID is same, then cancel current one.
+      if (that.curPointerClass) { that.cancel(); }
 
       if (startHandler.call(that, pointerXY)) {
         that.curPointerClass = pointerClass;
+        that.curTouchId = pointerClass === 'touch' ? touchId : null;
         that.lastPointerXY.clientX = pointerXY.clientX;
         that.lastPointerXY.clientY = pointerXY.clientY;
         if (that.options.preventDefault) { event.preventDefault(); }
@@ -137,16 +169,22 @@ class PointerEvent {
   addMoveHandler(element, moveHandler) {
     const that = this;
     const wrappedHandler = AnimEvent.add(event => {
-      const pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch',
-        pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
+      const pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch';
 
       // Avoid mouse events emulation
       if (pointerClass === 'touch') { that.lastTouchTime = Date.now(); }
 
       if (pointerClass === that.curPointerClass) {
-        that.move(pointerXY);
-        if (that.options.preventDefault) { event.preventDefault(); }
-        if (that.options.stopPropagation) { event.stopPropagation(); }
+        const pointerXY = pointerClass === 'touch'
+          ? getTouchById(event.changedTouches, that.curTouchId) : event;
+        if (hasXY(pointerXY)) {
+          if (pointerXY.clientX !== that.lastPointerXY.clientX ||
+              pointerXY.clientY !== that.lastPointerXY.clientY) {
+            that.move(pointerXY);
+          }
+          if (that.options.preventDefault) { event.preventDefault(); }
+          if (that.options.stopPropagation) { event.stopPropagation(); }
+        }
       }
     });
     addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
@@ -159,7 +197,7 @@ class PointerEvent {
    * @returns {void}
    */
   move(pointerXY) {
-    if (pointerXY) {
+    if (hasXY(pointerXY)) {
       this.lastPointerXY.clientX = pointerXY.clientX;
       this.lastPointerXY.clientY = pointerXY.clientY;
     }
@@ -176,16 +214,22 @@ class PointerEvent {
   addEndHandler(element, endHandler) {
     const that = this;
     function wrappedHandler(event) {
-      const pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch',
-        pointerXY = pointerClass === 'mouse' ? event : event.targetTouches[0] || event.touches[0];
+      const pointerClass = event.type === 'mouseup' ? 'mouse' : 'touch';
 
       // Avoid mouse events emulation
       if (pointerClass === 'touch') { that.lastTouchTime = Date.now(); }
 
       if (pointerClass === that.curPointerClass) {
-        that.end(pointerXY);
-        if (that.options.preventDefault) { event.preventDefault(); }
-        if (that.options.stopPropagation) { event.stopPropagation(); }
+        const pointerXY = pointerClass === 'touch'
+          ? getTouchById(event.changedTouches, that.curTouchId) ||
+            // It might have been removed from `touches` even if it is not in `changedTouches`.
+            (getTouchById(event.touches, that.curTouchId) ? null : {}) : // `{}` means matching
+          event;
+        if (pointerXY) {
+          that.end(pointerXY);
+          if (that.options.preventDefault) { event.preventDefault(); }
+          if (that.options.stopPropagation) { event.stopPropagation(); }
+        }
       }
     }
     addEventListenerWithOptions(element, 'mouseup', wrappedHandler, {capture: false, passive: false});
@@ -198,14 +242,14 @@ class PointerEvent {
    * @returns {void}
    */
   end(pointerXY) {
-    if (pointerXY) {
+    if (hasXY(pointerXY)) {
       this.lastPointerXY.clientX = pointerXY.clientX;
       this.lastPointerXY.clientY = pointerXY.clientY;
     }
     if (this.curEndHandler) {
       this.curEndHandler(this.lastPointerXY);
     }
-    this.curPointerClass = null;
+    this.curPointerClass = this.curTouchId = null;
   }
 
   /**
@@ -215,19 +259,22 @@ class PointerEvent {
    */
   addCancelHandler(element, cancelHandler) {
     const that = this;
-    function wrappedHandler(
-    ) {
+    function wrappedHandler(event) {
       /*
         Now, this is fired by touchcancel only, but it might be fired even if curPointerClass is mouse.
       */
       // const pointerClass = 'touch';
 
-      // Avoid mouse events emulation
-      that.lastTouchTime = Date.now();
+      that.lastTouchTime = Date.now(); // Avoid mouse events emulation
 
-      // if (pointerClass === that.curPointerClass) {
-      that.cancel();
-      // }
+      if (that.curPointerClass != null) {
+        const pointerXY = getTouchById(event.changedTouches, that.curTouchId) ||
+          // It might have been removed from `touches` even if it is not in `changedTouches`.
+          (getTouchById(event.touches, that.curTouchId) ? null : {}); // `{}` means matching
+        if (pointerXY) {
+          that.cancel();
+        }
+      }
     }
     addEventListenerWithOptions(element, 'touchcancel', wrappedHandler, {capture: false, passive: false});
     that.curCancelHandler = cancelHandler;
@@ -240,7 +287,7 @@ class PointerEvent {
     if (this.curCancelHandler) {
       this.curCancelHandler();
     }
-    this.curPointerClass = null;
+    this.curPointerClass = this.curTouchId = null;
   }
 
   static get addEventListenerWithOptions() { return addEventListenerWithOptions; }
