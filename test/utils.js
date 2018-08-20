@@ -37,14 +37,12 @@ var utils = (function() {
     target.dispatchEvent(new MouseEvent(type, pointerXY));
   }
 
-  var identifier = 0;
-
   function fireTouchEvent(target, type, pointerXY) { // pointerXY or touchEventInit{changedTouches}
     if (pointerXY.changedTouches) {
       pointerXY.bubbles = true;
       target.dispatchEvent(new TouchEvent(type, pointerXY));
     } else { // Auto init
-      pointerXY.identifier = identifier++;
+      pointerXY.identifier = 0;
       pointerXY.target = target;
       var touch = new Touch(pointerXY);
       target.dispatchEvent(new TouchEvent(type, {
