@@ -115,9 +115,7 @@ describe('pointerClass', function() {
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<moveListener>', 'type:touchmove', 'curPointerClass:mouse',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:touchmove', 'curPointerClass:mouse', '</moveListener>'
         ]);
       },
       // ====================================
@@ -187,9 +185,7 @@ describe('pointerClass', function() {
           'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<endListener>', 'type:touchend', 'curPointerClass:mouse',
-          // Cancel
-          '</endListener>'
+          '<endListener>', 'type:touchend', 'curPointerClass:mouse', '</endListener>'
         ]);
       },
       // ====================================
@@ -222,6 +218,7 @@ describe('pointerClass', function() {
           '</startListener>',
 
           '<cancelListener>', 'type:touchcancel', 'curPointerClass:mouse',
+          'CHECKED:event.touches',
           '<cancel>',
           '<cancelHandler>', '</cancelHandler>',
           'curPointerClass:null',
@@ -255,12 +252,10 @@ describe('pointerClass', function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
           '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-          'curPointerClass:touch', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<moveListener>', 'type:mousemove', 'curPointerClass:touch',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:mousemove', 'curPointerClass:touch(#0)', '</moveListener>'
         ]);
       },
       // ====================================
@@ -289,10 +284,10 @@ describe('pointerClass', function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
           '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-          'curPointerClass:touch', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<moveListener>', 'type:touchmove', 'curPointerClass:touch',
+          '<moveListener>', 'type:touchmove', 'curPointerClass:touch(#0)',
           '<move>',
           'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '<moveHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</moveHandler>',
@@ -326,12 +321,10 @@ describe('pointerClass', function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
           '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-          'curPointerClass:touch', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<endListener>', 'type:mouseup', 'curPointerClass:touch',
-          // Cancel
-          '</endListener>'
+          '<endListener>', 'type:mouseup', 'curPointerClass:touch(#0)', '</endListener>'
         ]);
       },
       // ====================================
@@ -360,10 +353,10 @@ describe('pointerClass', function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
           '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-          'curPointerClass:touch', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<endListener>', 'type:touchend', 'curPointerClass:touch',
+          '<endListener>', 'type:touchend', 'curPointerClass:touch(#0)',
           '<end>',
           'lastPointerXY:(' + X2 + ',' + Y2 + ')',
           '<endHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</endHandler>',
@@ -398,10 +391,10 @@ describe('pointerClass', function() {
         expect(traceLog).toEqual([
           '<startListener>', 'type:touchstart', 'curPointerClass:null',
           '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
-          'curPointerClass:touch', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
           '</startListener>',
 
-          '<cancelListener>', 'type:touchcancel', 'curPointerClass:touch',
+          '<cancelListener>', 'type:touchcancel', 'curPointerClass:touch(#0)',
           '<cancel>',
           '<cancelHandler>', '</cancelHandler>',
           'curPointerClass:null',
@@ -439,9 +432,7 @@ describe('pointerClass', function() {
           // Cancel
           '</startListener>',
 
-          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null', '</moveListener>'
         ]);
       },
       // ====================================
@@ -474,9 +465,7 @@ describe('pointerClass', function() {
           // Cancel
           '</startListener>',
 
-          '<moveListener>', 'type:touchmove', 'curPointerClass:null',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:touchmove', 'curPointerClass:null', '</moveListener>'
         ]);
       },
       // ====================================
@@ -509,9 +498,7 @@ describe('pointerClass', function() {
           // Cancel
           '</startListener>',
 
-          '<endListener>', 'type:mouseup', 'curPointerClass:null',
-          // Cancel
-          '</endListener>'
+          '<endListener>', 'type:mouseup', 'curPointerClass:null', '</endListener>'
         ]);
       },
       // ====================================
@@ -544,9 +531,7 @@ describe('pointerClass', function() {
           // Cancel
           '</startListener>',
 
-          '<endListener>', 'type:touchend', 'curPointerClass:null',
-          // Cancel
-          '</endListener>'
+          '<endListener>', 'type:touchend', 'curPointerClass:null', '</endListener>'
         ]);
       },
       // ====================================
@@ -579,12 +564,7 @@ describe('pointerClass', function() {
           // Cancel
           '</startListener>',
 
-          '<cancelListener>', 'type:touchcancel', 'curPointerClass:null',
-          '<cancel>',
-          '<cancelHandler>', '</cancelHandler>',
-          'curPointerClass:null',
-          '</cancel>',
-          '</cancelListener>'
+          '<cancelListener>', 'type:touchcancel', 'curPointerClass:null', '</cancelListener>'
         ]);
       },
       // ====================================
@@ -630,9 +610,7 @@ describe('pointerClass', function() {
           '</end>',
           '</endListener>',
 
-          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null', '</moveListener>'
         ]);
       },
       // ====================================
@@ -671,15 +649,14 @@ describe('pointerClass', function() {
           '</startListener>',
 
           '<cancelListener>', 'type:touchcancel', 'curPointerClass:mouse',
+          'CHECKED:event.touches',
           '<cancel>',
           '<cancelHandler>', '</cancelHandler>',
           'curPointerClass:null',
           '</cancel>',
           '</cancelListener>',
 
-          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null', '</moveListener>'
         ]);
       },
       // ====================================
@@ -722,9 +699,7 @@ describe('pointerClass', function() {
           'curPointerClass:null',
           '</end>',
 
-          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null', '</moveListener>'
         ]);
       },
       // ====================================
@@ -767,9 +742,156 @@ describe('pointerClass', function() {
           'curPointerClass:null',
           '</cancel>',
 
-          '<moveListener>', 'type:mousemove', 'curPointerClass:null',
-          // Cancel
-          '</moveListener>'
+          '<moveListener>', 'type:mousemove', 'curPointerClass:null', '</moveListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
+  });
+
+  it('start(mouse) -> start(mouse)', function(done) {
+    resetData();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
+
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
+
+          '<startListener>', 'type:mousedown', 'curPointerClass:mouse',
+          // Cancel current
+          '<cancel>', '<cancelHandler>', '</cancelHandler>', 'curPointerClass:null', '</cancel>',
+          '<startHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '</startListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
+  });
+
+  it('start(mouse) -> start(touch)', function(done) {
+    resetData();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
+
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:mousedown', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
+
+          '<startListener>', 'type:touchstart', 'curPointerClass:mouse',
+          // Cancel current
+          '<cancel>', '<cancelHandler>', '</cancelHandler>', 'curPointerClass:null', '</cancel>',
+          '<startHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</startHandler>',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '</startListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
+  });
+
+  it('start(touch) -> start(mouse)', function(done) {
+    resetData();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      PointerEvent.MOUSE_EMU_INTERVAL + 100, // To avoid mouse events emulation
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
+
+        utils.fireMouseEvent(elmTarget, 'mousedown', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('mouse');
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:touchstart', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
+
+          '<startListener>', 'type:mousedown', 'curPointerClass:touch(#0)',
+          // Cancel current
+          '<cancel>', '<cancelHandler>', '</cancelHandler>', 'curPointerClass:null', '</cancel>',
+          '<startHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</startHandler>',
+          'curPointerClass:mouse', 'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '</startListener>'
+        ]);
+      },
+      // ====================================
+      done
+    ]);
+  });
+
+  it('start(touch) -> start(touch)', function(done) {
+    resetData();
+    utils.intervalExec([
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBeNull();
+
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X1, clientY: Y1});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
+
+        utils.fireTouchEvent(elmTarget, 'touchstart', {clientX: X2, clientY: Y2});
+      },
+      // ====================================
+      function() {
+        expect(pointerEvent.curPointerClass).toBe('touch');
+        expect(traceLog).toEqual([
+          '<startListener>', 'type:touchstart', 'curPointerClass:null',
+          '<startHandler>', 'pointerXY:(' + X1 + ',' + Y1 + ')', '</startHandler>',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X1 + ',' + Y1 + ')',
+          '</startListener>',
+
+          '<startListener>', 'type:touchstart', 'curPointerClass:touch(#0)',
+          // Cancel current
+          '<cancel>', '<cancelHandler>', '</cancelHandler>', 'curPointerClass:null', '</cancel>',
+          '<startHandler>', 'pointerXY:(' + X2 + ',' + Y2 + ')', '</startHandler>',
+          'curPointerClass:touch(#0)', 'lastPointerXY:(' + X2 + ',' + Y2 + ')',
+          '</startListener>'
         ]);
       },
       // ====================================
