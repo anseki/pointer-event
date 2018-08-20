@@ -335,6 +335,7 @@ class PointerEvent {
 
 // [DEBUG]
 PointerEvent.traceLog = traceLog;
+PointerEvent.MOUSE_EMU_INTERVAL = MOUSE_EMU_INTERVAL;
 // [/DEBUG]
 
 export default PointerEvent;

@@ -431,6 +431,7 @@ var PointerEvent = function () {
 
 
 PointerEvent.traceLog = traceLog;
+PointerEvent.MOUSE_EMU_INTERVAL = MOUSE_EMU_INTERVAL;
 // [/DEBUG]
 
 export default PointerEvent;

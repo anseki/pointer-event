@@ -647,6 +647,7 @@ var PointerEvent = function () {
 
 
 PointerEvent.traceLog = traceLog;
+PointerEvent.MOUSE_EMU_INTERVAL = MOUSE_EMU_INTERVAL;
 // [/DEBUG]
 
 /* harmony default export */ __webpack_exports__["default"] = (PointerEvent);
