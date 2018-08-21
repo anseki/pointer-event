@@ -87,7 +87,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -119,7 +119,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -157,7 +157,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -189,7 +189,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -227,7 +227,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -259,7 +259,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -296,7 +296,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -328,7 +328,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -366,7 +366,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -403,7 +403,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -436,7 +436,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -469,7 +469,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -502,7 +502,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -535,7 +535,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -568,7 +568,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -614,7 +614,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -660,7 +660,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -703,7 +703,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -746,7 +746,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -783,7 +783,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -820,7 +820,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -858,7 +858,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -895,7 +895,7 @@ describe('pointerClass', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 

@@ -88,7 +88,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -123,7 +123,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -174,7 +174,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -222,7 +222,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -272,7 +272,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -321,7 +321,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -370,7 +370,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -418,7 +418,7 @@ describe('mouse-emulation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 

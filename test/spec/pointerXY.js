@@ -103,7 +103,7 @@ describe('pointerXY', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -186,7 +186,7 @@ describe('pointerXY', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -304,7 +304,7 @@ describe('pointerXY', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -358,7 +358,7 @@ describe('pointerXY', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -521,7 +521,7 @@ describe('pointerXY', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -618,7 +618,7 @@ describe('pointerXY', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 

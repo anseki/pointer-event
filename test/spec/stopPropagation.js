@@ -74,7 +74,7 @@ describe('stopPropagation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -109,7 +109,7 @@ describe('stopPropagation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -145,7 +145,7 @@ describe('stopPropagation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -166,7 +166,7 @@ describe('stopPropagation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -197,7 +197,7 @@ describe('stopPropagation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -229,7 +229,7 @@ describe('stopPropagation', function() {
         ]);
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -261,7 +261,7 @@ describe('stopPropagation', function() {
         nestStartHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -305,7 +305,7 @@ describe('stopPropagation', function() {
         nestMoveHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -350,7 +350,7 @@ describe('stopPropagation', function() {
         nestEndHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -384,7 +384,7 @@ describe('stopPropagation', function() {
         nestStartHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -428,7 +428,7 @@ describe('stopPropagation', function() {
         nestMoveHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -473,7 +473,7 @@ describe('stopPropagation', function() {
         nestEndHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
@@ -514,7 +514,7 @@ describe('stopPropagation', function() {
         nestCancelHandler = null;
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 

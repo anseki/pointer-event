@@ -68,7 +68,7 @@ describe('add/remove', function() {
         expect(startHandlerCalled).toBe(false); // Not called
       },
       // ====================================
-      done
+      0, done
     ]);
   });
 
