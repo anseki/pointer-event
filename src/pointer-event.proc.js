@@ -6,7 +6,7 @@
  * PointerEvent
  * https://github.com/anseki/pointer-event
  *
- * Copyright (c) 2018 anseki
+ * Copyright (c) 2021 anseki
  * Licensed under the MIT license.
  */
 
