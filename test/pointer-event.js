@@ -467,12 +467,13 @@ var PointerEvent = /*#__PURE__*/function () {
     /**
      * @param {Element} element - A target element.
      * @param {function} moveHandler - This is called with pointerXY when it moves.
+     * @param {?boolean} rawEvent - Capture events without `requestAnimationFrame`.
      * @returns {void}
      */
 
   }, {
     key: "addMoveHandler",
-    value: function addMoveHandler(element, moveHandler) {
+    value: function addMoveHandler(element, moveHandler, rawEvent) {
       var that = this;
 
       anim_event__WEBPACK_IMPORTED_MODULE_0__["default"].add = function (listener) {
@@ -480,7 +481,7 @@ var PointerEvent = /*#__PURE__*/function () {
       }; // Disable AnimEvent [DEBUG/]
 
 
-      var wrappedHandler = anim_event__WEBPACK_IMPORTED_MODULE_0__["default"].add(function (event) {
+      function handler(event) {
         traceLog.push('<moveListener>', "type:".concat(event.type)); // [DEBUG/]
 
         traceLog.push("curPointerClass:".concat(that.curPointerClass).concat(that.curPointerClass === 'touch' ? "(#".concat(that.curTouchId, ")") : '')); // [DEBUG/]
@@ -518,7 +519,9 @@ var PointerEvent = /*#__PURE__*/function () {
         }
 
         traceLog.push('</moveListener>'); // [DEBUG/]
-      });
+      }
+
+      var wrappedHandler = rawEvent ? handler : anim_event__WEBPACK_IMPORTED_MODULE_0__["default"].add(handler);
       addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {
         capture: false,
         passive: false

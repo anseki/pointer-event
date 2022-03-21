@@ -172,12 +172,14 @@ class PointerEvent {
   /**
    * @param {Element} element - A target element.
    * @param {function} moveHandler - This is called with pointerXY when it moves.
+   * @param {?boolean} rawEvent - Capture events without `requestAnimationFrame`.
    * @returns {void}
    */
-  addMoveHandler(element, moveHandler) {
+  addMoveHandler(element, moveHandler, rawEvent) {
     const that = this;
     AnimEvent.add = listener => listener; // Disable AnimEvent [DEBUG/]
-    const wrappedHandler = AnimEvent.add(event => {
+
+    function handler(event) {
       traceLog.push('<moveListener>', `type:${event.type}`); // [DEBUG/]
       traceLog.push(`curPointerClass:${that.curPointerClass}${that.curPointerClass === 'touch' ? `(#${that.curTouchId})` : ''}`); // [DEBUG/]
       const pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch';
@@ -201,7 +203,9 @@ class PointerEvent {
         }
       }
       traceLog.push('</moveListener>'); // [DEBUG/]
-    });
+    }
+
+    const wrappedHandler = rawEvent ? handler : AnimEvent.add(handler);
     addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchmove', wrappedHandler, {capture: false, passive: false});
     that.curMoveHandler = moveHandler;
