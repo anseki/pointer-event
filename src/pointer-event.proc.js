@@ -6,7 +6,7 @@
  * PointerEvent
  * https://github.com/anseki/pointer-event
  *
- * Copyright (c) 2021 anseki
+ * Copyright (c) 2022 anseki
  * Licensed under the MIT license.
  */
 
@@ -166,11 +166,13 @@ class PointerEvent {
   /**
    * @param {Element} element - A target element.
    * @param {function} moveHandler - This is called with pointerXY when it moves.
+   * @param {?boolean} rawEvent - Capture events without `requestAnimationFrame`.
    * @returns {void}
    */
-  addMoveHandler(element, moveHandler) {
+  addMoveHandler(element, moveHandler, rawEvent) {
     const that = this;
-    const wrappedHandler = AnimEvent.add(event => {
+
+    function handler(event) {
       const pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch';
 
       // Avoid mouse events emulation
@@ -188,7 +190,9 @@ class PointerEvent {
           if (that.options.stopPropagation) { event.stopPropagation(); }
         }
       }
-    });
+    }
+
+    const wrappedHandler = rawEvent ? handler : AnimEvent.add(handler);
     addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {capture: false, passive: false});
     addEventListenerWithOptions(element, 'touchmove', wrappedHandler, {capture: false, passive: false});
     that.curMoveHandler = moveHandler;

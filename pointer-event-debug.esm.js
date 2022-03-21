@@ -12,7 +12,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * PointerEvent
  * https://github.com/anseki/pointer-event
  *
- * Copyright (c) 2021 anseki
+ * Copyright (c) 2022 anseki
  * Licensed under the MIT license.
  */
 import AnimEvent from 'anim-event';

@@ -12,7 +12,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * PointerEvent
  * https://github.com/anseki/pointer-event
  *
- * Copyright (c) 2021 anseki
+ * Copyright (c) 2022 anseki
  * Licensed under the MIT license.
  */
 import AnimEvent from 'anim-event';
@@ -228,14 +228,16 @@ var PointerEvent = /*#__PURE__*/function () {
     /**
      * @param {Element} element - A target element.
      * @param {function} moveHandler - This is called with pointerXY when it moves.
+     * @param {?boolean} rawEvent - Capture events without `requestAnimationFrame`.
      * @returns {void}
      */
 
   }, {
     key: "addMoveHandler",
-    value: function addMoveHandler(element, moveHandler) {
+    value: function addMoveHandler(element, moveHandler, rawEvent) {
       var that = this;
-      var wrappedHandler = AnimEvent.add(function (event) {
+
+      function handler(event) {
         var pointerClass = event.type === 'mousemove' ? 'mouse' : 'touch'; // Avoid mouse events emulation
 
         if (pointerClass === 'touch') {
@@ -259,7 +261,9 @@ var PointerEvent = /*#__PURE__*/function () {
             }
           }
         }
-      });
+      }
+
+      var wrappedHandler = rawEvent ? handler : AnimEvent.add(handler);
       addEventListenerWithOptions(element, 'mousemove', wrappedHandler, {
         capture: false,
         passive: false
