@@ -19,11 +19,12 @@ var pointerEvent = new PointerEvent(),
 pointerEvent.addStartHandler(document.getElementById('trigger'), startHandlerId);
 
 // When `mousemove` or `touchmove` is fired on this element, this move-handler is called.
+// By default, the handler is called via `requestAnimationFrame`. `true` for third argument disables this.
 pointerEvent.addMoveHandler(document, function(pointerXY) {
   console.log('[MOVE]');
   console.dir(pointerXY); // Object having `clientX` and `clientY`.
   this.options.stopPropagation = false; // Access to current instance via `this`.
-});
+}/*, true */);
 
 // When `mouseup` or `touchend` is fired on this element, this end-handler is called.
 pointerEvent.addEndHandler(document, function(pointerXY) {
