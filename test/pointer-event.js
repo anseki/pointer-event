@@ -727,6 +727,89 @@ var PointerEvent = /*#__PURE__*/function () {
     get: function get() {
       return addEventListenerWithOptions;
     }
+    /**
+     * Emulate `click` event via `touchend` event.
+     * @param {Element} element - Target element, listeners that call `event.preventDefault()` are attached later.
+     * @param {?number} moveTolerance - Move tolerance.
+     * @param {?number} timeTolerance - Time tolerance.
+     * @returns {Element} The passed `element`.
+     */
+
+  }, {
+    key: "initClickEmulator",
+    value: function initClickEmulator(element, moveTolerance, timeTolerance) {
+      var DEFAULT_MOVE_TOLERANCE = 16,
+          // px
+      DEFAULT_TIME_TOLERANCE = 400; // ms
+
+      var startX, startY, touchId, startMs;
+
+      if (moveTolerance == null) {
+        moveTolerance = DEFAULT_MOVE_TOLERANCE;
+      }
+
+      if (timeTolerance == null) {
+        timeTolerance = DEFAULT_TIME_TOLERANCE;
+      }
+      /**
+       * Get Touch instance in list.
+       * @param {Touch[]} touches - An Array or TouchList instance.
+       * @param {number} id - Touch#identifier
+       * @returns {(Touch|null)} - A found Touch instance.
+       */
+
+
+      function getTouchById(touches, id) {
+        if (touches != null && id != null) {
+          for (var i = 0; i < touches.length; i++) {
+            if (touches[i].identifier === id) {
+              return touches[i];
+            }
+          }
+        }
+
+        return null;
+      }
+
+      function getPointsLength(p0, p1) {
+        var lx = p0.x - p1.x,
+            ly = p0.y - p1.y;
+        return Math.sqrt(lx * lx + ly * ly);
+      }
+
+      element.addEventListener('touchstart', function (event) {
+        var touch = event.changedTouches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        touchId = touch.identifier;
+        startMs = performance.now();
+      });
+      element.addEventListener('touchend', function (event) {
+        var touch = getTouchById(event.changedTouches, touchId);
+
+        if (typeof startX === 'number' && typeof startY === 'number' && typeof startMs === 'number' && touch && typeof touch.clientX === 'number' && typeof touch.clientY === 'number' && getPointsLength({
+          x: startX,
+          y: startY
+        }, {
+          x: touch.clientX,
+          y: touch.clientY
+        }) <= moveTolerance && performance.now() - startMs <= timeTolerance) {
+          // FIRE
+          setTimeout(function () {
+            element.dispatchEvent(new MouseEvent('click', {
+              clientX: touch.clientX,
+              clientY: touch.clientY
+            }));
+          }, 0);
+        }
+
+        startX = startY = touchId = startMs = null;
+      });
+      element.addEventListener('touchcancel', function () {
+        startX = startY = touchId = startMs = null;
+      });
+      return element;
+    }
   }]);
 
   return PointerEvent;
