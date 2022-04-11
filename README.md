@@ -75,4 +75,8 @@ var pointerEvent = new PointerEvent({stopPropagation: false}); // Don't call tha
 
 // addEventListener with specific option.
 PointerEvent.addEventListenerWithOptions(target, type, listener, options);
+
+// Emulate `click` event via `touchend` event.
+// Default emulator is disabled by `event.preventDefault()`.
+PointerEvent.initClickEmulator(element, moveTolerance, timeTolerance);
 ```
