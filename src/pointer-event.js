@@ -372,15 +372,15 @@ class PointerEvent {
       return Math.sqrt(lx * lx + ly * ly);
     }
 
-    element.addEventListener('touchstart', event => {
+    addEventListenerWithOptions(element, 'touchstart', event => {
       const touch = event.changedTouches[0];
       startX = touch.clientX;
       startY = touch.clientY;
       touchId = touch.identifier;
       startMs = performance.now();
-    });
+    }, {capture: false, passive: false});
 
-    element.addEventListener('touchend', event => {
+    addEventListenerWithOptions(element, 'touchend', event => {
       const touch = getTouchById(event.changedTouches, touchId);
       if (typeof startX === 'number' && typeof startY === 'number' && typeof startMs === 'number' &&
           touch && typeof touch.clientX === 'number' && typeof touch.clientY === 'number' &&
@@ -394,9 +394,10 @@ class PointerEvent {
         }, 0);
       }
       startX = startY = touchId = startMs = null;
-    });
+    }, {capture: false, passive: false});
 
-    element.addEventListener('touchcancel', () => { startX = startY = touchId = startMs = null; });
+    addEventListenerWithOptions(element, 'touchcancel',
+      () => { startX = startY = touchId = startMs = null; }, {capture: false, passive: false});
 
     return element;
   }
