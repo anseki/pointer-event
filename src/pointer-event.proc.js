@@ -12,7 +12,9 @@
 
 import AnimEvent from 'anim-event';
 
-const MOUSE_EMU_INTERVAL = 400; // Avoid mouse events emulation
+const MOUSE_EMU_INTERVAL = 400, // Avoid mouse events emulation
+  CLICK_EMULATOR_ELEMENTS = [],
+  DBLCLICK_EMULATOR_ELEMENTS = [];
 
 
 // Support options for addEventListener
@@ -35,6 +37,12 @@ function addEventListenerWithOptions(target, type, listener, options) {
   // When `passive` is not supported, consider that the `useCapture` is supported instead of
   // `options` (i.e. options other than the `passive` also are not supported).
   target.addEventListener(type, listener, passiveSupported ? options : options.capture);
+}
+
+function getPointsLength(p0, p1) {
+  const lx = p0.x - p1.x,
+    ly = p0.y - p1.y;
+  return Math.sqrt(lx * lx + ly * ly);
 }
 
 /**
@@ -306,6 +314,9 @@ class PointerEvent {
    * @returns {Element} The passed `element`.
    */
   static initClickEmulator(element, moveTolerance, timeTolerance) {
+    if (CLICK_EMULATOR_ELEMENTS.includes(element)) { return element; }
+    CLICK_EMULATOR_ELEMENTS.push(element);
+
     const DEFAULT_MOVE_TOLERANCE = 16, // px
       DEFAULT_TIME_TOLERANCE = 400; // ms
     let startX, startY, touchId, startMs;
@@ -313,36 +324,15 @@ class PointerEvent {
     if (moveTolerance == null) { moveTolerance = DEFAULT_MOVE_TOLERANCE; }
     if (timeTolerance == null) { timeTolerance = DEFAULT_TIME_TOLERANCE; }
 
-    /**
-     * Get Touch instance in list.
-     * @param {Touch[]} touches - An Array or TouchList instance.
-     * @param {number} id - Touch#identifier
-     * @returns {(Touch|null)} - A found Touch instance.
-     */
-    function getTouchById(touches, id) {
-      if (touches != null && id != null) {
-        for (let i = 0; i < touches.length; i++) {
-          if (touches[i].identifier === id) { return touches[i]; }
-        }
-      }
-      return null;
-    }
-
-    function getPointsLength(p0, p1) {
-      const lx = p0.x - p1.x,
-        ly = p0.y - p1.y;
-      return Math.sqrt(lx * lx + ly * ly);
-    }
-
-    element.addEventListener('touchstart', event => {
+    addEventListenerWithOptions(element, 'touchstart', event => {
       const touch = event.changedTouches[0];
       startX = touch.clientX;
       startY = touch.clientY;
       touchId = touch.identifier;
       startMs = performance.now();
-    });
+    }, {capture: false, passive: false});
 
-    element.addEventListener('touchend', event => {
+    addEventListenerWithOptions(element, 'touchend', event => {
       const touch = getTouchById(event.changedTouches, touchId);
       if (typeof startX === 'number' && typeof startY === 'number' && typeof startMs === 'number' &&
           touch && typeof touch.clientX === 'number' && typeof touch.clientY === 'number' &&
@@ -351,14 +341,62 @@ class PointerEvent {
           performance.now() - startMs <= timeTolerance) {
         // FIRE
         setTimeout(() => {
-          element.dispatchEvent(
-            new MouseEvent('click', {clientX: touch.clientX, clientY: touch.clientY}));
+          const newEvent = new MouseEvent('click', {clientX: touch.clientX, clientY: touch.clientY});
+          newEvent.emulated = true;
+          element.dispatchEvent(newEvent);
         }, 0);
       }
       startX = startY = touchId = startMs = null;
-    });
+    }, {capture: false, passive: false});
 
-    element.addEventListener('touchcancel', () => { startX = startY = touchId = startMs = null; });
+    addEventListenerWithOptions(element, 'touchcancel',
+      () => { startX = startY = touchId = startMs = null; }, {capture: false, passive: false});
+
+    return element;
+  }
+
+  /**
+   * Emulate `dblclick` event via `touchend` event.
+   * @param {Element} element - Target element, listeners that call `event.preventDefault()` are attached later.
+   * @param {?number} moveTolerance - Move tolerance.
+   * @param {?number} timeTolerance - Time tolerance.
+   * @returns {Element} The passed `element`.
+   */
+  static initDblClickEmulator(element, moveTolerance, timeTolerance) {
+    if (DBLCLICK_EMULATOR_ELEMENTS.includes(element)) { return element; }
+    DBLCLICK_EMULATOR_ELEMENTS.push(element);
+
+    const DEFAULT_MOVE_TOLERANCE = 16, // px
+      DEFAULT_TIME_TOLERANCE = 400; // ms
+    let startX, startY, startMs;
+
+    if (moveTolerance == null) { moveTolerance = DEFAULT_MOVE_TOLERANCE; }
+    if (timeTolerance == null) { timeTolerance = DEFAULT_TIME_TOLERANCE; }
+
+    PointerEvent.initClickEmulator(element, moveTolerance, timeTolerance);
+    addEventListenerWithOptions(element, 'click', event => {
+      if (!event.emulated) { return; } // Ignore events that are not from `touchend`.
+
+      if (typeof startX === 'number' && typeof startY === 'number' && typeof startMs === 'number') { // 2nd
+        if (typeof event.clientX === 'number' && typeof event.clientY === 'number' &&
+            getPointsLength(
+              {x: startX, y: startY}, {x: event.clientX, y: event.clientY}) <= moveTolerance &&
+            performance.now() - startMs <= timeTolerance * 2) { // up (tolerance 1) down (tolerance 2) up
+          // FIRE
+          setTimeout(() => {
+            const newEvent = new MouseEvent('dblclick', {clientX: event.clientX, clientY: event.clientY});
+            newEvent.emulated = true;
+            element.dispatchEvent(newEvent);
+          }, 0);
+        }
+        startX = startY = startMs = null;
+
+      } else { // 1st
+        startX = event.clientX;
+        startY = event.clientY;
+        startMs = performance.now();
+      }
+    }, {capture: false, passive: false});
 
     return element;
   }

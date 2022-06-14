@@ -80,4 +80,11 @@ PointerEvent.addEventListenerWithOptions(target, type, listener, options);
 // Default emulator is disabled by `event.preventDefault()`.
 // Also, this has to be called before attaching listeners that call `event.preventDefault()` (e.g. `addStartHandler()`).
 PointerEvent.initClickEmulator(element, moveTolerance, timeTolerance);
+// `Event` object that is passed to listeners has `emulated` property that is `true`.
+
+// Emulate `dblclick` event via `touchend` event.
+// Default emulator is disabled by `event.preventDefault()`.
+// Also, this has to be called before attaching listeners that call `event.preventDefault()` (e.g. `addStartHandler()`).
+PointerEvent.initDblClickEmulator(element, moveTolerance, timeTolerance);
+// `Event` object that is passed to listeners has `emulated` property that is `true`.
 ```
