@@ -78,5 +78,6 @@ PointerEvent.addEventListenerWithOptions(target, type, listener, options);
 
 // Emulate `click` event via `touchend` event.
 // Default emulator is disabled by `event.preventDefault()`.
+// Also, this has to be called before attaching listeners that call `event.preventDefault()` (e.g. `addStartHandler()`).
 PointerEvent.initClickEmulator(element, moveTolerance, timeTolerance);
 ```
