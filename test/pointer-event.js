@@ -841,32 +841,28 @@ var PointerEvent = /*#__PURE__*/function () {
 
       PointerEvent.initClickEmulator(element, moveTolerance, timeTolerance);
       addEventListenerWithOptions(element, 'click', function (event) {
-        if (!event.emulated) {
+        if (!event.emulated || // Ignore events that are not from `touchend`.
+        typeof event.clientX !== 'number' || typeof event.clientY !== 'number') {
           return;
-        } // Ignore events that are not from `touchend`.
+        }
 
-
-        if (typeof startX === 'number' && typeof startY === 'number' && typeof startMs === 'number') {
-          // 2nd
-          if (typeof event.clientX === 'number' && typeof event.clientY === 'number' && getPointsLength({
-            x: startX,
-            y: startY
-          }, {
-            x: event.clientX,
-            y: event.clientY
-          }) <= moveTolerance && performance.now() - startMs <= timeTolerance * 2) {
-            // up (tolerance 1) down (tolerance 2) up
+        if (typeof startX === 'number' && getPointsLength({
+          x: startX,
+          y: startY
+        }, {
+          x: event.clientX,
+          y: event.clientY
+        }) <= moveTolerance && performance.now() - startMs <= timeTolerance * 2) {
+          // up (tolerance) down (tolerance) up
+          setTimeout(function () {
             // FIRE
-            setTimeout(function () {
-              var newEvent = new MouseEvent('dblclick', {
-                clientX: event.clientX,
-                clientY: event.clientY
-              });
-              newEvent.emulated = true;
-              element.dispatchEvent(newEvent);
-            }, 0);
-          }
-
+            var newEvent = new MouseEvent('dblclick', {
+              clientX: event.clientX,
+              clientY: event.clientY
+            });
+            newEvent.emulated = true;
+            element.dispatchEvent(newEvent);
+          }, 0);
           startX = startY = startMs = null;
         } else {
           // 1st

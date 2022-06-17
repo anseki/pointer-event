@@ -413,20 +413,17 @@ class PointerEvent {
 
     PointerEvent.initClickEmulator(element, moveTolerance, timeTolerance);
     addEventListenerWithOptions(element, 'click', event => {
-      if (!event.emulated) { return; } // Ignore events that are not from `touchend`.
+      if (!event.emulated || // Ignore events that are not from `touchend`.
+        typeof event.clientX !== 'number' || typeof event.clientY !== 'number') { return; }
 
-      if (typeof startX === 'number' && typeof startY === 'number' && typeof startMs === 'number') { // 2nd
-        if (typeof event.clientX === 'number' && typeof event.clientY === 'number' &&
-            getPointsLength(
-              {x: startX, y: startY}, {x: event.clientX, y: event.clientY}) <= moveTolerance &&
-            performance.now() - startMs <= timeTolerance * 2) { // up (tolerance 1) down (tolerance 2) up
-          // FIRE
-          setTimeout(() => {
-            const newEvent = new MouseEvent('dblclick', {clientX: event.clientX, clientY: event.clientY});
-            newEvent.emulated = true;
-            element.dispatchEvent(newEvent);
-          }, 0);
-        }
+      if (typeof startX === 'number' &&
+          getPointsLength({x: startX, y: startY}, {x: event.clientX, y: event.clientY}) <= moveTolerance &&
+          performance.now() - startMs <= timeTolerance * 2) { // up (tolerance) down (tolerance) up
+        setTimeout(() => { // FIRE
+          const newEvent = new MouseEvent('dblclick', {clientX: event.clientX, clientY: event.clientY});
+          newEvent.emulated = true;
+          element.dispatchEvent(newEvent);
+        }, 0);
         startX = startY = startMs = null;
 
       } else { // 1st
